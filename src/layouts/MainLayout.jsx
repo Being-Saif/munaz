@@ -1,10 +1,17 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from '@components/layout/Navbar';
 import Footer from '@components/layout/Footer';
 import CartDrawer from '@components/cart/CartDrawer';
 
 const MainLayout = () => {
+  const { pathname } = useLocation();
+
+  // Scroll to top on every route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Announcement Bar */}
