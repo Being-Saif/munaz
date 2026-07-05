@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Check } from 'lucide-react';
+import { setCredentials } from '@redux/slices/authSlice';
+import { signupUser } from '@services/authService';
 import toast from 'react-hot-toast';
 import { cn } from '@utils/cn';
 
@@ -31,6 +34,8 @@ const SignupPage = () => {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const passwordStrength = getPasswordStrength(formData.password);
 
@@ -59,10 +64,24 @@ const SignupPage = () => {
     if (!validate()) return;
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    const result = signupUser({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+    });
     setIsLoading(false);
-    toast.success('Account created! Welcome to Munaz 🎉');
-    // In real app: API call + redirect to verify email
+
+    if (result.success) {
+      dispatch(setCredentials({ user: result.user, accessToken: 'demo_token_' + Date.now() }));
+      toast.success(`Welcome to Munaz, ${result.user.firstName}! 🎉`);
+      navigate('/');
+    } else {
+      setErrors({ email: result.error });
+      toast.error(result.error);
+    }
   };
 
   return (

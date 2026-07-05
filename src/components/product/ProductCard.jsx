@@ -7,19 +7,27 @@ import { cn } from '@utils/cn';
 import { formatPrice, calculateDiscount } from '@utils/formatters';
 import { addToCart } from '@redux/slices/cartSlice';
 import { toggleWishlist, selectIsWishlisted } from '@redux/slices/wishlistSlice';
+import { selectIsAuthenticated } from '@redux/slices/authSlice';
 import { openQuickView, openCart } from '@redux/slices/uiSlice';
+import AuthPromptModal from '@components/common/AuthPromptModal';
 import toast from 'react-hot-toast';
 
 const ProductCard = ({ product, index = 0, isHovered, onHover, onLeave }) => {
   const dispatch = useDispatch();
   const isWishlisted = useSelector(selectIsWishlisted(product.id));
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [authPrompt, setAuthPrompt] = useState({ open: false, type: 'default' });
 
   const discount = calculateDiscount(product.price, product.salePrice);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!isAuthenticated) {
+      setAuthPrompt({ open: true, type: 'cart' });
+      return;
+    }
     dispatch(addToCart({
       productId: product.id,
       name: product.name,
@@ -36,6 +44,10 @@ const ProductCard = ({ product, index = 0, isHovered, onHover, onLeave }) => {
   const handleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!isAuthenticated) {
+      setAuthPrompt({ open: true, type: 'wishlist' });
+      return;
+    }
     dispatch(toggleWishlist(product.id));
     toast.success(
       isWishlisted ? 'Removed from wishlist' : 'Added to wishlist! ❤️'
@@ -217,6 +229,13 @@ const ProductCard = ({ product, index = 0, isHovered, onHover, onLeave }) => {
           )}
         </div>
       </Link>
+
+      {/* Auth Prompt */}
+      <AuthPromptModal
+        isOpen={authPrompt.open}
+        onClose={() => setAuthPrompt({ open: false, type: 'default' })}
+        type={authPrompt.type}
+      />
     </motion.div>
   );
 };

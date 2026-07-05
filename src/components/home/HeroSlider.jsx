@@ -34,8 +34,15 @@ const HeroSlider = () => {
       <Swiper
         modules={[Autoplay, EffectFade, Navigation]}
         effect="fade"
-        autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+        fadeEffect={{ crossFade: true }}
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+          waitForTransition: false,
+        }}
         loop={true}
+        loopAdditionalSlides={1}
         speed={800}
         navigation={{
           prevEl: '.hero-prev',

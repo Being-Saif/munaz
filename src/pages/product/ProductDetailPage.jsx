@@ -9,8 +9,10 @@ import { cn } from '@utils/cn';
 import { formatPrice, calculateDiscount } from '@utils/formatters';
 import { addToCart } from '@redux/slices/cartSlice';
 import { toggleWishlist, selectIsWishlisted } from '@redux/slices/wishlistSlice';
+import { selectIsAuthenticated } from '@redux/slices/authSlice';
 import { openCart } from '@redux/slices/uiSlice';
 import ProductGrid from '@components/product/ProductGrid';
+import AuthPromptModal from '@components/common/AuthPromptModal';
 import products from '@data/products.json';
 import reviews from '@data/reviews.json';
 import toast from 'react-hot-toast';
@@ -24,6 +26,7 @@ const ProductDetailPage = () => {
 
   const product = products.find((p) => p.slug === slug);
   const isWishlisted = useSelector(selectIsWishlisted(product?.id || ''));
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   const [selectedColor, setSelectedColor] = useState(product?.colors?.[0]?.name || '');
   const [selectedSize, setSelectedSize] = useState('');
@@ -31,6 +34,7 @@ const ProductDetailPage = () => {
   const [activeImage, setActiveImage] = useState(0);
   const [mainSwiper, setMainSwiper] = useState(null);
   const [activeTab, setActiveTab] = useState('description');
+  const [authPrompt, setAuthPrompt] = useState({ open: false, type: 'default' });
 
   const productReviews = reviews.filter((r) => r.productId === product?.id);
   const discount = product ? calculateDiscount(product.price, product.salePrice) : 0;
@@ -52,6 +56,10 @@ const ProductDetailPage = () => {
   }
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      setAuthPrompt({ open: true, type: 'cart' });
+      return;
+    }
     if (!selectedSize) {
       toast.error('Please select a size');
       return;
@@ -70,6 +78,10 @@ const ProductDetailPage = () => {
   };
 
   const handleWishlist = () => {
+    if (!isAuthenticated) {
+      setAuthPrompt({ open: true, type: 'wishlist' });
+      return;
+    }
     dispatch(toggleWishlist(product.id));
     toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist! ❤️');
   };
@@ -357,6 +369,13 @@ const ProductDetailPage = () => {
           </div>
         )}
       </div>
+
+      {/* Auth Prompt */}
+      <AuthPromptModal
+        isOpen={authPrompt.open}
+        onClose={() => setAuthPrompt({ open: false, type: 'default' })}
+        type={authPrompt.type}
+      />
     </div>
   );
 };

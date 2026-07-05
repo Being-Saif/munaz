@@ -146,9 +146,19 @@ const CartDrawer = () => {
 
                       {/* Details */}
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-body text-sm font-semibold text-dark truncate pr-6">
-                          {item.name}
-                        </h4>
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-body text-sm font-semibold text-dark truncate">
+                            {item.name}
+                          </h4>
+                          {/* Remove Button - inline with item */}
+                          <button
+                            onClick={() => dispatch(removeFromCart(item.id))}
+                            className="p-1 text-text-muted hover:text-error transition-colors flex-shrink-0"
+                            aria-label="Remove item"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
                         <p className="text-text-muted text-xs mt-0.5">
                           Size: {item.size} | Color: {item.color}
                         </p>
@@ -181,15 +191,6 @@ const CartDrawer = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Remove Button */}
-                      <button
-                        onClick={() => dispatch(removeFromCart(item.id))}
-                        className="absolute top-0 right-0 p-1 text-text-muted hover:text-error transition-colors"
-                        aria-label="Remove item"
-                      >
-                        <Trash2 size={14} />
-                      </button>
                     </motion.div>
                   ))}
                 </AnimatePresence>

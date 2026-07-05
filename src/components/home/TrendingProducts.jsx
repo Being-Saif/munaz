@@ -16,7 +16,7 @@ const TrendingProducts = () => {
   const [activeTab, setActiveTab] = useState('trending');
 
   const currentTab = tabs.find((t) => t.id === activeTab);
-  const filteredProducts = products.filter(currentTab.filter).slice(0, 8);
+  const filteredProducts = products.filter(currentTab.filter).slice(0, 6);
 
   return (
     <section className="section-container section-padding max-w-6xl mx-auto">

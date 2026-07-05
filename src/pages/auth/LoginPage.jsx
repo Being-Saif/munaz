@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
+import { setCredentials } from '@redux/slices/authSlice';
+import { loginUser } from '@services/authService';
 import toast from 'react-hot-toast';
 import { cn } from '@utils/cn';
 
@@ -12,13 +15,13 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const validate = () => {
     const errs = {};
     if (!email) errs.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(email)) errs.email = 'Invalid email address';
     if (!password) errs.password = 'Password is required';
-    else if (password.length < 6) errs.password = 'Password must be at least 6 characters';
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -28,11 +31,19 @@ const LoginPage = () => {
     if (!validate()) return;
 
     setIsLoading(true);
-    // Simulate login
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    const result = loginUser(email, password);
     setIsLoading(false);
-    toast.success('Welcome back! 🎉');
-    // In real app: dispatch(setCredentials({ user, accessToken })) + navigate('/')
+
+    if (result.success) {
+      dispatch(setCredentials({ user: result.user, accessToken: 'demo_token_' + Date.now() }));
+      toast.success(`Welcome back, ${result.user.firstName}! 🎉`);
+      navigate('/');
+    } else {
+      setErrors({ password: result.error });
+      toast.error(result.error);
+    }
   };
 
   return (
