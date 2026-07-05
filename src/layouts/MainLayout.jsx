@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from '@components/layout/Navbar';
 import Footer from '@components/layout/Footer';
+import CartDrawer from '@components/cart/CartDrawer';
 
 const MainLayout = () => {
   return (
@@ -30,6 +31,9 @@ const MainLayout = () => {
 
       {/* Footer */}
       <Footer />
+
+      {/* Cart Drawer — Slide out from right (accessible from any page) */}
+      <CartDrawer />
     </div>
   );
 };

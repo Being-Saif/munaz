@@ -218,9 +218,9 @@
     "tags": ["kurti", "embroidered", "ethnic", "festival", "cotton"],
     "brand": "Munaz Ethnic",
     "images": [
-      { "id": "img_012", "url": "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600", "alt": "Embroidered kurti set" }
+      { "id": "img_012", "url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600", "alt": "Embroidered kurti set" }
     ],
-    "thumbnail": "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=300",
+    "thumbnail": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=300",
     "colors": [
       { "name": "Teal", "hex": "#0D9488" },
       { "name": "Maroon", "hex": "#800000" },
@@ -413,9 +413,9 @@
     "tags": ["silk", "wrap", "blouse", "elegant", "office"],
     "brand": "Munaz Originals",
     "images": [
-      { "id": "img_017", "url": "https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=600", "alt": "Silk wrap blouse" }
+      { "id": "img_017", "url": "https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?w=600", "alt": "Silk wrap blouse" }
     ],
-    "thumbnail": "https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=300",
+    "thumbnail": "https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?w=300",
     "colors": [
       { "name": "Ivory", "hex": "#FFFFF0" },
       { "name": "Blush", "hex": "#FFB6C1" },

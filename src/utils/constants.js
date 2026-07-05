@@ -36,7 +36,7 @@ export const ANIMATION = {
 export const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Shop', href: '/shop' },
-  { label: 'Categories', href: '/categories', hasMegaMenu: true },
+  { label: 'Categories', href: '/categories' },
   { label: 'New Arrivals', href: '/shop?filter=new-arrivals' },
   { label: 'Sale', href: '/shop?filter=sale' },
 ];
