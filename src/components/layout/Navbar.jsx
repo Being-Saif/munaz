@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Heart, ShoppingBag, User, Menu, X } from 'lucide-react';
@@ -7,17 +7,21 @@ import { cn } from '@utils/cn';
 import { NAV_LINKS, APP_NAME } from '@utils/constants';
 import { selectCartTotalItems } from '@redux/slices/cartSlice';
 import { selectWishlistCount } from '@redux/slices/wishlistSlice';
+import { selectIsAuthenticated } from '@redux/slices/authSlice';
 import { openCart, openMobileMenu, closeMobileMenu, selectIsMobileMenuOpen } from '@redux/slices/uiSlice';
 import { isActiveRoute } from '@utils/helpers';
+import AuthPromptModal from '@components/common/AuthPromptModal';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [authPrompt, setAuthPrompt] = useState({ open: false, type: 'default' });
   const location = useLocation();
   const dispatch = useDispatch();
 
   const cartCount = useSelector(selectCartTotalItems);
   const wishlistCount = useSelector(selectWishlistCount);
   const isMobileMenuOpen = useSelector(selectIsMobileMenuOpen);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   // Scroll detection for glass effect
   useEffect(() => {
@@ -75,8 +79,14 @@ const Navbar = () => {
             </button>
 
             {/* Wishlist */}
-            <Link
-              to="/wishlist"
+            <button
+              onClick={() => {
+                if (isAuthenticated) {
+                  window.location.href = '/wishlist';
+                } else {
+                  setAuthPrompt({ open: true, type: 'wishlist' });
+                }
+              }}
               className="relative p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
               aria-label="Wishlist"
             >
@@ -90,7 +100,7 @@ const Navbar = () => {
                   {wishlistCount}
                 </motion.span>
               )}
-            </Link>
+            </button>
 
             {/* Cart */}
             <button
@@ -113,13 +123,19 @@ const Navbar = () => {
             </button>
 
             {/* User */}
-            <Link
-              to="/account"
+            <button
+              onClick={() => {
+                if (isAuthenticated) {
+                  window.location.href = '/account';
+                } else {
+                  setAuthPrompt({ open: true, type: 'profile' });
+                }
+              }}
               className="hidden sm:flex p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
               aria-label="Account"
             >
               <User size={22} className="text-dark/80" />
-            </Link>
+            </button>
 
             {/* Mobile Menu Toggle */}
             <button
@@ -169,6 +185,13 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Auth Prompt Modal */}
+      <AuthPromptModal
+        isOpen={authPrompt.open}
+        onClose={() => setAuthPrompt({ open: false, type: 'default' })}
+        type={authPrompt.type}
+      />
     </header>
   );
 };

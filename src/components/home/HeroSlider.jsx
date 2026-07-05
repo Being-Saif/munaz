@@ -83,7 +83,7 @@ const HeroSlider = () => {
                           initial="hidden"
                           animate="visible"
                           exit="exit"
-                          className="font-heading text-3xl sm:text-4xl lg:text-6xl xl:text-7xl text-dark leading-tight mb-2"
+                          className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-dark leading-tight mb-2"
                         >
                           {slide.subtitle.split(' ').slice(0, -1).join(' ')}{' '}
                           <span className="italic text-gradient block sm:inline">

@@ -19,7 +19,7 @@ const TrendingProducts = () => {
   const filteredProducts = products.filter(currentTab.filter).slice(0, 8);
 
   return (
-    <section className="section-container section-padding">
+    <section className="section-container section-padding max-w-6xl mx-auto">
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 lg:mb-10">
         <motion.h2
@@ -85,7 +85,7 @@ const TrendingProducts = () => {
           {filteredProducts.length > 0 ? (
             <ProductGrid
               products={filteredProducts}
-              columns={{ sm: 2, md: 3, lg: 4 }}
+              columns={{ sm: 2, md: 3, lg: 3 }}
             />
           ) : (
             <div className="text-center py-16">

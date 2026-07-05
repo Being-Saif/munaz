@@ -232,11 +232,11 @@ const ShopPage = () => {
     <div className="pt-28 lg:pt-32 pb-16">
       <div className="section-container">
         {/* Page Header */}
-        <div className="mb-8">
+        <div className="mb-5">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-heading text-3xl lg:text-4xl text-dark mb-2"
+            className="font-heading text-2xl sm:text-3xl lg:text-4xl text-dark mb-1"
           >
             {filterParam === 'sale' ? 'Sale' :
              filterParam === 'new-arrivals' ? 'New Arrivals' :
@@ -244,20 +244,20 @@ const ShopPage = () => {
              filters.category ? categories.find(c => c.slug === filters.category)?.name || 'Shop' :
              'Shop All'}
           </motion.h1>
-          <p className="text-text-secondary text-sm">
-            Showing {filteredProducts.length} results
+          <p className="text-text-secondary text-xs sm:text-sm lg:hidden">
+            {filteredProducts.length} results
           </p>
         </div>
 
         {/* Top Bar — Sort + Mobile Filter Toggle */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
+        <div className="flex items-center justify-between gap-3 mb-5 pb-4 border-b border-border">
           {/* Mobile Filter Button */}
           <button
             onClick={() => setShowMobileFilters(true)}
-            className="lg:hidden flex items-center gap-2 text-sm font-medium text-dark border border-border px-4 py-2 rounded-md hover:border-primary transition-colors"
+            className="lg:hidden flex items-center gap-2 text-sm font-medium text-dark border border-border px-3 sm:px-4 py-2 rounded-md hover:border-primary transition-colors"
           >
             <SlidersHorizontal size={16} />
-            Filters
+            <span className="hidden sm:inline">Filters</span>
             {hasActiveFilters && (
               <span className="w-5 h-5 bg-primary text-white text-[10px] rounded-full flex items-center justify-center">
                 !
@@ -265,34 +265,39 @@ const ShopPage = () => {
             )}
           </button>
 
-          <div className="hidden lg:block" />
+          {/* Results count - hidden on mobile */}
+          <p className="hidden lg:block text-text-secondary text-sm">
+            Showing {filteredProducts.length} results
+          </p>
 
           {/* Sort Dropdown */}
-          <div className="relative">
+          <div className="relative ml-auto">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="appearance-none bg-surface border border-border rounded-md px-4 py-2 pr-10 text-sm font-body text-dark focus:outline-none focus:border-primary cursor-pointer"
+              className="appearance-none bg-surface border border-border rounded-md px-3 sm:px-4 py-2 pr-8 sm:pr-10 text-xs sm:text-sm font-body text-dark focus:outline-none focus:border-primary cursor-pointer"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
-                  Sort By: {opt.label}
+                  {opt.label}
                 </option>
               ))}
             </select>
-            <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+            <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
           </div>
         </div>
 
         {/* Main Content — Sidebar + Grid */}
-        <div className="flex gap-8">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           {/* Desktop Sidebar */}
-          <aside className="hidden lg:block w-60 flex-shrink-0">
-            <FilterPanel />
+          <aside className="hidden lg:block w-56 xl:w-60 flex-shrink-0">
+            <div className="sticky top-32">
+              <FilterPanel />
+            </div>
           </aside>
 
           {/* Product Grid */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <AnimatePresence mode="wait">
               <motion.div
                 key={JSON.stringify(filters) + sortBy}
@@ -304,7 +309,7 @@ const ShopPage = () => {
                 {filteredProducts.length > 0 ? (
                   <ProductGrid
                     products={filteredProducts}
-                    columns={{ sm: 2, md: 2, lg: 3 }}
+                    columns={{ sm: 2, md: 3, lg: 3 }}
                   />
                 ) : (
                   <div className="text-center py-20">

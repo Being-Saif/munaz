@@ -73,7 +73,7 @@ const ProductCard = ({ product, index = 0, isHovered, onHover, onLeave }) => {
     >
       <Link to={`/product/${product.slug}`} className="block">
         {/* Image Container */}
-        <div className="relative aspect-product overflow-hidden bg-background">
+        <div className="relative aspect-[3/3.5] overflow-hidden bg-background">
           {/* Sale Badge */}
           {product.isOnSale && discount > 0 && (
             <motion.span
@@ -154,24 +154,24 @@ const ProductCard = ({ product, index = 0, isHovered, onHover, onLeave }) => {
         </div>
 
         {/* Card Body */}
-        <div className="p-3 sm:p-4">
+        <div className="p-2.5 sm:p-3">
           {/* Category */}
-          <p className="text-text-muted text-[10px] uppercase tracking-wider font-medium mb-1">
+          <p className="text-text-muted text-[9px] sm:text-[10px] uppercase tracking-wider font-medium mb-0.5">
             {product.subcategory || product.category}
           </p>
 
           {/* Title */}
-          <h3 className="font-body text-sm font-semibold text-dark line-clamp-2 mb-1.5 group-hover:text-primary transition-colors duration-300">
+          <h3 className="font-body text-xs sm:text-sm font-semibold text-dark line-clamp-2 mb-1 group-hover:text-primary transition-colors duration-300">
             {product.name}
           </h3>
 
           {/* Rating */}
-          <div className="flex items-center gap-1.5 mb-2">
+          <div className="flex items-center gap-1 mb-1.5">
             <div className="flex items-center gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  size={12}
+                  size={10}
                   className={cn(
                     i < Math.floor(product.ratingsAverage)
                       ? 'text-warning fill-warning'
@@ -180,18 +180,18 @@ const ProductCard = ({ product, index = 0, isHovered, onHover, onLeave }) => {
                 />
               ))}
             </div>
-            <span className="text-text-muted text-[10px]">
+            <span className="text-text-muted text-[9px]">
               ({product.ratingsCount})
             </span>
           </div>
 
           {/* Price */}
-          <div className="flex items-center gap-2">
-            <span className="font-button text-base font-bold text-dark">
+          <div className="flex items-center gap-1.5">
+            <span className="font-button text-sm font-bold text-dark">
               {formatPrice(product.salePrice || product.price)}
             </span>
             {product.isOnSale && product.salePrice && (
-              <span className="text-text-muted text-xs line-through">
+              <span className="text-text-muted text-[10px] line-through">
                 {formatPrice(product.price)}
               </span>
             )}
@@ -199,17 +199,17 @@ const ProductCard = ({ product, index = 0, isHovered, onHover, onLeave }) => {
 
           {/* Color Options */}
           {product.colors && product.colors.length > 1 && (
-            <div className="flex items-center gap-1.5 mt-2.5">
+            <div className="flex items-center gap-1 mt-2">
               {product.colors.slice(0, 4).map((color) => (
                 <span
                   key={color.name}
-                  className="w-4 h-4 rounded-full border border-border shadow-sm"
+                  className="w-3 h-3 rounded-full border border-border shadow-sm"
                   style={{ backgroundColor: color.hex }}
                   title={color.name}
                 />
               ))}
               {product.colors.length > 4 && (
-                <span className="text-text-muted text-[10px]">
+                <span className="text-text-muted text-[9px]">
                   +{product.colors.length - 4}
                 </span>
               )}
