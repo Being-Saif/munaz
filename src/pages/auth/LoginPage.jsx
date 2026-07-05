@@ -20,7 +20,7 @@ const LoginPage = () => {
 
   const validate = () => {
     const errs = {};
-    if (!email) errs.email = 'Email is required';
+    if (!email) errs.email = 'Username or email is required';
     if (!password) errs.password = 'Password is required';
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -62,14 +62,14 @@ const LoginPage = () => {
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Email */}
         <div>
-          <label className="block text-sm font-medium text-dark mb-1.5">Email Address</label>
+          <label className="block text-sm font-medium text-dark mb-1.5">Username or Email</label>
           <div className="relative">
             <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
             <input
-              type="email"
+              type="text"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: '' })); }}
-              placeholder="Enter your email"
+              placeholder="Enter username or email"
               className={cn(
                 'input-base pl-11',
                 errors.email && 'border-error focus:border-error focus:ring-error/10'

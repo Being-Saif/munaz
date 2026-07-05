@@ -8,6 +8,7 @@ import ShopPage from '@pages/shop/ShopPage';
 import CategoriesPage from '@pages/shop/CategoriesPage';
 import ProductDetailPage from '@pages/product/ProductDetailPage';
 import WishlistPage from '@pages/user/WishlistPage';
+import ProfilePage from '@pages/user/ProfilePage';
 
 // Auth Pages
 import LoginPage from '@pages/auth/LoginPage';
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       { path: 'categories', element: <CategoriesPage /> },
       { path: 'product/:slug', element: <ProductDetailPage /> },
       { path: 'wishlist', element: <WishlistPage /> },
+      { path: 'account', element: <ProfilePage /> },
     ],
   },
 

@@ -16,6 +16,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [authPrompt, setAuthPrompt] = useState({ open: false, type: 'default' });
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const cartCount = useSelector(selectCartTotalItems);
@@ -82,7 +83,7 @@ const Navbar = () => {
             <button
               onClick={() => {
                 if (isAuthenticated) {
-                  window.location.href = '/wishlist';
+                  navigate('/wishlist');
                 } else {
                   setAuthPrompt({ open: true, type: 'wishlist' });
                 }
@@ -126,7 +127,7 @@ const Navbar = () => {
             <button
               onClick={() => {
                 if (isAuthenticated) {
-                  window.location.href = '/account';
+                  navigate('/account');
                 } else {
                   setAuthPrompt({ open: true, type: 'profile' });
                 }
