@@ -1,0 +1,288 @@
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ======================================
+   MUNAZ — Global Styles
+   Premium Luxury Fashion E-Commerce
+   ====================================== */
+
+/* ===== CSS Custom Properties ===== */
+@layer base {
+  :root {
+    --primary: #7E57C2;
+    --primary-dark: #5E35B1;
+    --primary-light: #B39DDB;
+    --secondary: #EC4899;
+    --secondary-dark: #DB2777;
+    --accent: #F472B6;
+    --background: #FFF5F8;
+    --surface: #FFFFFF;
+    --surface-hover: #FDF2F8;
+    --dark: #1E1B4B;
+    --dark-surface: #2D2A5E;
+    --text-primary: #1E1B4B;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    --border: #F3E8FF;
+    --success: #10B981;
+    --error: #EF4444;
+    --warning: #F59E0B;
+
+    /* Shadows */
+    --shadow-card: 0 4px 12px rgba(126, 87, 194, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
+    --shadow-card-hover: 0 20px 48px rgba(126, 87, 194, 0.18), 0 8px 16px rgba(0, 0, 0, 0.06);
+    --shadow-glow: 0 0 20px rgba(126, 87, 194, 0.3), 0 0 40px rgba(126, 87, 194, 0.1);
+
+    /* Transitions */
+    --ease-velora: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+    /* Glass */
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(126, 87, 194, 0.08);
+    --glass-blur: 20px;
+  }
+
+  /* Base element styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    line-height: 1.2;
+  }
+
+  button {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: var(--primary);
+    color: white;
+  }
+}
+
+/* ===== Component Layer ===== */
+@layer components {
+  /* Glass morphism */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .glass-dark {
+    background: rgba(30, 27, 75, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(126, 87, 194, 0.15);
+  }
+
+  /* Button base */
+  .btn {
+    @apply inline-flex items-center justify-center font-button font-medium rounded-md
+           transition-all duration-300 ease-velora select-none
+           focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary text-white px-6 py-3
+           hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-lg
+           active:translate-y-0 active:scale-[0.97];
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary text-white px-6 py-3
+           hover:bg-secondary-dark hover:-translate-y-0.5 hover:shadow-lg
+           active:translate-y-0 active:scale-[0.97];
+  }
+
+  .btn-outline {
+    @apply btn border-2 border-primary text-primary px-6 py-3
+           hover:bg-primary/5 hover:-translate-y-0.5
+           active:translate-y-0 active:scale-[0.97];
+  }
+
+  .btn-ghost {
+    @apply btn text-primary px-4 py-2
+           hover:bg-primary/5
+           active:scale-[0.97];
+  }
+
+  /* Card base */
+  .card {
+    @apply bg-surface rounded-lg border border-border shadow-card
+           transition-all duration-400 ease-velora;
+  }
+
+  .card-hover {
+    @apply card hover:shadow-card-hover hover:-translate-y-2 hover:scale-[1.02]
+           hover:border-primary/20;
+  }
+
+  /* Section container */
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-padding {
+    @apply py-12 sm:py-16 lg:py-20;
+  }
+
+  /* Section heading */
+  .section-heading {
+    @apply font-heading text-section-mobile lg:text-section text-dark;
+  }
+
+  /* Input base */
+  .input-base {
+    @apply w-full px-4 py-3 rounded-md border border-border bg-surface
+           font-body text-dark placeholder:text-text-muted
+           transition-all duration-300
+           focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10
+           focus:shadow-[0_0_0_3px_rgba(126,87,194,0.1)];
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-sale {
+    @apply badge bg-secondary text-white;
+  }
+
+  .badge-new {
+    @apply badge bg-primary text-white;
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    @apply bg-gradient-shimmer bg-[length:200%_100%] animate-shimmer rounded-md;
+  }
+
+  /* Link hover effect */
+  .link-hover {
+    @apply relative inline-block;
+  }
+
+  .link-hover::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 ease-velora;
+  }
+
+  .link-hover:hover::after {
+    @apply w-full;
+  }
+}
+
+/* ===== Utility Layer ===== */
+@layer utilities {
+  /* Text gradient */
+  .text-gradient {
+    @apply bg-gradient-cta bg-clip-text text-transparent;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Line clamp */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Duration utilities */
+  .duration-400 {
+    transition-duration: 400ms;
+  }
+
+  /* Aspect ratios for product images */
+  .aspect-product {
+    aspect-ratio: 3/4;
+  }
+
+  .aspect-hero {
+    aspect-ratio: 16/9;
+  }
+
+  .aspect-category {
+    aspect-ratio: 1/1;
+  }
+}

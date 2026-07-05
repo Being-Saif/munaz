@@ -1,0 +1,90 @@
+[
+  {
+    "id": "rev_001",
+    "productId": "prod_001",
+    "user": { "name": "Priya Sharma", "avatar": null },
+    "rating": 5,
+    "title": "Absolutely stunning!",
+    "comment": "This dress exceeded my expectations. The fabric quality is amazing and the color is exactly as shown. Got so many compliments at my friend's wedding!",
+    "isVerifiedPurchase": true,
+    "helpfulCount": 24,
+    "createdAt": "2026-06-28T10:00:00Z"
+  },
+  {
+    "id": "rev_002",
+    "productId": "prod_001",
+    "user": { "name": "Ananya Patel", "avatar": null },
+    "rating": 5,
+    "title": "Perfect fit and gorgeous color",
+    "comment": "Ordered in M and it fits perfectly. The lavender shade is beautiful and the material flows so nicely. Highly recommend for any occasion.",
+    "isVerifiedPurchase": true,
+    "helpfulCount": 18,
+    "createdAt": "2026-06-25T10:00:00Z"
+  },
+  {
+    "id": "rev_003",
+    "productId": "prod_001",
+    "user": { "name": "Riya Kapoor", "avatar": null },
+    "rating": 4,
+    "title": "Great dress, runs slightly long",
+    "comment": "Beautiful dress overall. The only thing is it runs slightly long for petite frames (I'm 5'2\"). Had to get it hemmed but otherwise it's perfect.",
+    "isVerifiedPurchase": true,
+    "helpfulCount": 12,
+    "createdAt": "2026-06-20T10:00:00Z"
+  },
+  {
+    "id": "rev_004",
+    "productId": "prod_002",
+    "user": { "name": "Sneha Reddy", "avatar": null },
+    "rating": 5,
+    "title": "Best blazer I own!",
+    "comment": "The tailoring is impeccable. Structured but not stiff. The pink color is sophisticated, not too bright. Perfect for my office presentations.",
+    "isVerifiedPurchase": true,
+    "helpfulCount": 31,
+    "createdAt": "2026-06-30T10:00:00Z"
+  },
+  {
+    "id": "rev_005",
+    "productId": "prod_004",
+    "user": { "name": "Meera Joshi", "avatar": null },
+    "rating": 5,
+    "title": "Luxurious feel and fit",
+    "comment": "This satin dress is everything! The cowl neckline is so flattering and the fabric feels incredibly luxurious against the skin. Worth every penny.",
+    "isVerifiedPurchase": true,
+    "helpfulCount": 27,
+    "createdAt": "2026-06-15T10:00:00Z"
+  },
+  {
+    "id": "rev_006",
+    "productId": "prod_005",
+    "user": { "name": "Kavya Nair", "avatar": null },
+    "rating": 5,
+    "title": "Daily go-to bag",
+    "comment": "This has become my everyday bag. It's spacious enough for all my essentials, the quality is excellent, and the gold hardware adds a premium touch.",
+    "isVerifiedPurchase": true,
+    "helpfulCount": 15,
+    "createdAt": "2026-06-18T10:00:00Z"
+  },
+  {
+    "id": "rev_007",
+    "productId": "prod_007",
+    "user": { "name": "Aisha Khan", "avatar": null },
+    "rating": 5,
+    "title": "Elegant and lightweight",
+    "comment": "These pearl earrings are absolutely gorgeous. They're so lightweight I forget I'm wearing them. The gold plating looks real and hasn't tarnished at all.",
+    "isVerifiedPurchase": true,
+    "helpfulCount": 22,
+    "createdAt": "2026-06-22T10:00:00Z"
+  },
+  {
+    "id": "rev_008",
+    "productId": "prod_003",
+    "user": { "name": "Divya Iyer", "avatar": null },
+    "rating": 4,
+    "title": "Perfect summer staple",
+    "comment": "Love this dress for hot days! The cotton is breathable and the print is cheerful. Only giving 4 stars because the color is slightly more muted than in photos.",
+    "isVerifiedPurchase": true,
+    "helpfulCount": 9,
+    "createdAt": "2026-06-27T10:00:00Z"
+  }
+]

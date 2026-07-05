@@ -1,0 +1,54 @@
+[
+  {
+    "id": "banner_001",
+    "title": "New Collection",
+    "subtitle": "Elevate Your Elegance",
+    "description": "Discover luxury fashion that defines your true style",
+    "image": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1200",
+    "mobileImage": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600",
+    "buttonText": "Shop Now",
+    "link": "/shop?filter=new-arrivals",
+    "position": "hero",
+    "order": 1,
+    "isActive": true
+  },
+  {
+    "id": "banner_002",
+    "title": "Summer Sale",
+    "subtitle": "Up to 50% Off",
+    "description": "Limited time offers on your favorite styles",
+    "image": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200",
+    "mobileImage": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600",
+    "buttonText": "Shop Sale",
+    "link": "/shop?filter=sale",
+    "position": "hero",
+    "order": 2,
+    "isActive": true
+  },
+  {
+    "id": "banner_003",
+    "title": "The Luxury Collection",
+    "subtitle": "Premium Fabrics & Design",
+    "description": "Handcrafted pieces for the discerning woman",
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200",
+    "mobileImage": "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600",
+    "buttonText": "Explore",
+    "link": "/shop?collection=luxury",
+    "position": "hero",
+    "order": 3,
+    "isActive": true
+  },
+  {
+    "id": "banner_004",
+    "title": "Ethnic Elegance",
+    "subtitle": "Festival Ready",
+    "description": "Traditional meets modern in our ethnic collection",
+    "image": "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=1200",
+    "mobileImage": "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600",
+    "buttonText": "Shop Ethnic",
+    "link": "/shop?category=co-ords",
+    "position": "promotional",
+    "order": 1,
+    "isActive": true
+  }
+]
