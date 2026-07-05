@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingBag, Minus, Plus, Star, Truck, RotateCcw, ShieldCheck, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Thumbs, Navigation } from 'swiper/modules';
+import { Navigation } from 'swiper/modules';
 import { cn } from '@utils/cn';
 import { formatPrice, calculateDiscount } from '@utils/formatters';
 import { addToCart } from '@redux/slices/cartSlice';
@@ -16,7 +16,6 @@ import reviews from '@data/reviews.json';
 import toast from 'react-hot-toast';
 
 import 'swiper/css';
-import 'swiper/css/thumbs';
 import 'swiper/css/navigation';
 
 const ProductDetailPage = () => {
@@ -29,7 +28,8 @@ const ProductDetailPage = () => {
   const [selectedColor, setSelectedColor] = useState(product?.colors?.[0]?.name || '');
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [activeImage, setActiveImage] = useState(0);
+  const [mainSwiper, setMainSwiper] = useState(null);
   const [activeTab, setActiveTab] = useState('description');
 
   const productReviews = reviews.filter((r) => r.productId === product?.id);
@@ -98,11 +98,12 @@ const ProductDetailPage = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            {/* Main Image */}
+            {/* Main Image — Swipeable */}
             <Swiper
-              modules={[Thumbs, Navigation]}
-              thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
+              modules={[Navigation]}
               navigation={true}
+              onSwiper={setMainSwiper}
+              onSlideChange={(swiper) => setActiveImage(swiper.activeIndex)}
               className="rounded-lg overflow-hidden aspect-product bg-background mb-3"
             >
               {product.images.map((img) => (
@@ -118,24 +119,27 @@ const ProductDetailPage = () => {
               ))}
             </Swiper>
 
-            {/* Thumbnails */}
+            {/* Thumbnails — Click to select */}
             {product.images.length > 1 && (
-              <Swiper
-                modules={[Thumbs]}
-                watchSlidesProgress
-                onSwiper={setThumbsSwiper}
-                slidesPerView={4}
-                spaceBetween={8}
-                className="thumbs-swiper"
-              >
-                {product.images.map((img) => (
-                  <SwiperSlide key={img.id} className="cursor-pointer">
-                    <div className="aspect-square rounded-md overflow-hidden border-2 border-transparent hover:border-primary/50 transition-colors">
-                      <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
-                    </div>
-                  </SwiperSlide>
+              <div className="flex gap-2">
+                {product.images.map((img, index) => (
+                  <button
+                    key={img.id}
+                    onClick={() => {
+                      setActiveImage(index);
+                      if (mainSwiper) mainSwiper.slideTo(index);
+                    }}
+                    className={cn(
+                      'w-16 h-20 sm:w-20 sm:h-24 rounded-md overflow-hidden border-2 transition-all duration-200',
+                      activeImage === index
+                        ? 'border-primary ring-2 ring-primary/20'
+                        : 'border-border hover:border-primary/50 opacity-70 hover:opacity-100'
+                    )}
+                  >
+                    <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
+                  </button>
                 ))}
-              </Swiper>
+              </div>
             )}
           </motion.div>
 
