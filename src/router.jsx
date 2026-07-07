@@ -9,6 +9,7 @@ import CategoriesPage from '@pages/shop/CategoriesPage';
 import ProductDetailPage from '@pages/product/ProductDetailPage';
 import WishlistPage from '@pages/user/WishlistPage';
 import ProfilePage from '@pages/user/ProfilePage';
+import CheckoutPage from '@pages/checkout/CheckoutPage';
 
 // Auth Pages
 import LoginPage from '@pages/auth/LoginPage';
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
       { path: 'product/:slug', element: <ProductDetailPage /> },
       { path: 'wishlist', element: <WishlistPage /> },
       { path: 'account', element: <ProfilePage /> },
+      { path: 'checkout', element: <CheckoutPage /> },
     ],
   },
 

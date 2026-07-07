@@ -132,7 +132,7 @@ const Navbar = () => {
                   setAuthPrompt({ open: true, type: 'profile' });
                 }
               }}
-              className="hidden sm:flex p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
+              className="flex p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
               aria-label="Account"
             >
               <User size={22} className="text-dark/80" />
