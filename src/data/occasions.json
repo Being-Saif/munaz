@@ -1,0 +1,34 @@
+[
+  {
+    "id": "occ_001",
+    "name": "Wedding",
+    "slug": "wedding",
+    "tagline": "Bridal & Wedding Guest Looks",
+    "image": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=600&h=750",
+    "link": "/shop?occasion=wedding"
+  },
+  {
+    "id": "occ_002",
+    "name": "Festive",
+    "slug": "festive",
+    "tagline": "Celebrate in Style",
+    "image": "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&q=80&w=600&h=750",
+    "link": "/shop?occasion=festive"
+  },
+  {
+    "id": "occ_003",
+    "name": "Casual",
+    "slug": "casual",
+    "tagline": "Everyday Elegance",
+    "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&q=80&w=600&h=750",
+    "link": "/shop?occasion=casual"
+  },
+  {
+    "id": "occ_004",
+    "name": "Office Wear",
+    "slug": "office",
+    "tagline": "Power Dressing",
+    "image": "https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&q=80&w=600&h=750",
+    "link": "/shop?occasion=office"
+  }
+]

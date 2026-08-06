@@ -1,34 +1,38 @@
-import HeroSlider from '@components/home/HeroSlider';
-import TrustBadges from '@components/home/TrustBadges';
-import CategoryGrid from '@components/home/CategoryGrid';
-import FlashSale from '@components/home/FlashSale';
-import TrendingProducts from '@components/home/TrendingProducts';
-import Testimonials from '@components/home/Testimonials';
-import Newsletter from '@components/home/Newsletter';
+import HeroBanner from '@components/home/HeroBanner';
+import CategoryStrip from '@components/home/CategoryStrip';
+import NewArrivals from '@components/home/NewArrivals';
+import PromoBanner from '@components/home/PromoBanner';
+import ShopByOccasion from '@components/home/ShopByOccasion';
+import TrendingCarousel from '@components/home/TrendingCarousel';
+import WhyShopWithUs from '@components/home/WhyShopWithUs';
+import NewsletterBanner from '@components/home/NewsletterBanner';
 
 const HomePage = () => {
   return (
     <div>
-      {/* Hero Slider — Full-width with text animations */}
-      <HeroSlider />
+      {/* Hero Banner — Full-width image slider like biba.in */}
+      <HeroBanner />
 
-      {/* Trust Badges — Free Shipping, Returns, etc. */}
-      <TrustBadges />
+      {/* Shop By Category — Rectangular cards with overlapping text */}
+      <CategoryStrip />
 
-      {/* Shop By Category — Circular cards with hover effects */}
-      <CategoryGrid />
+      {/* New Arrivals — Clean product grid */}
+      <NewArrivals />
 
-      {/* Flash Sale — Dark section with countdown + carousel */}
-      <FlashSale />
+      {/* Promotional Offer Banners — Side by side deal banners */}
+      <PromoBanner />
 
-      {/* Trending / New Arrivals / Best Sellers — Tab switching with focus/unfocus cards */}
-      <TrendingProducts />
+      {/* Shop By Occasion — Wedding, Festive, Casual, Office */}
+      <ShopByOccasion />
 
-      {/* Customer Testimonials — 3 auto-sliding review cards */}
-      <Testimonials />
+      {/* Trending Now — Horizontal product carousel */}
+      <TrendingCarousel />
 
-      {/* Newsletter — Gradient CTA with subscribe form */}
-      <Newsletter />
+      {/* Why Shop With Us — Trust icons */}
+      <WhyShopWithUs />
+
+      {/* Newsletter — Subscribe banner */}
+      <NewsletterBanner />
     </div>
   );
 };
