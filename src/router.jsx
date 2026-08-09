@@ -16,6 +16,15 @@ import LoginPage from '@pages/auth/LoginPage';
 import SignupPage from '@pages/auth/SignupPage';
 import ForgotPasswordPage from '@pages/auth/ForgotPasswordPage';
 
+// Admin Pages
+import AdminLayout from '@pages/admin/AdminLayout';
+import AdminDashboard from '@pages/admin/AdminDashboard';
+import AdminProducts from '@pages/admin/AdminProducts';
+import AdminCategories from '@pages/admin/AdminCategories';
+import AdminBanners from '@pages/admin/AdminBanners';
+import AdminOrders from '@pages/admin/AdminOrders';
+import AdminCustomers from '@pages/admin/AdminCustomers';
+
 const router = createBrowserRouter([
   // Main Layout (with Navbar + Footer)
   {
@@ -29,6 +38,20 @@ const router = createBrowserRouter([
       { path: 'wishlist', element: <WishlistPage /> },
       { path: 'account', element: <ProfilePage /> },
       { path: 'checkout', element: <CheckoutPage /> },
+    ],
+  },
+
+  // Admin Layout (separate dashboard layout)
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [
+      { index: true, element: <AdminDashboard /> },
+      { path: 'products', element: <AdminProducts /> },
+      { path: 'categories', element: <AdminCategories /> },
+      { path: 'banners', element: <AdminBanners /> },
+      { path: 'orders', element: <AdminOrders /> },
+      { path: 'customers', element: <AdminCustomers /> },
     ],
   },
 
