@@ -3,7 +3,7 @@ import api from '@services/api';
 
 /**
  * Simple hook to fetch data from the API
- * Falls back to provided default data if API is unavailable
+ * Shows defaultData immediately, replaces with API data when loaded
  */
 const useApi = (endpoint, defaultData = []) => {
   const [data, setData] = useState(defaultData);
@@ -15,16 +15,19 @@ const useApi = (endpoint, defaultData = []) => {
 
     const fetchData = async () => {
       try {
-        setLoading(true);
         const res = await api.get(endpoint);
         if (!cancelled) {
-          setData(res.data || res);
+          const apiData = res.data || res;
+          // Only update if we actually got data
+          if (apiData && (Array.isArray(apiData) ? apiData.length > 0 : true)) {
+            setData(apiData);
+          }
           setError(null);
         }
       } catch (err) {
         if (!cancelled) {
           setError(err.message);
-          // Keep default data on error
+          // Keep defaultData on error — don't clear it
         }
       } finally {
         if (!cancelled) setLoading(false);

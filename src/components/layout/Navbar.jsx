@@ -36,10 +36,10 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-velora',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
-          ? 'bg-white shadow-md py-3 lg:py-4 backdrop-blur-xl'
-          : 'bg-white py-3 lg:bg-transparent lg:py-7'
+          ? 'bg-white shadow-md py-3 lg:py-3 backdrop-blur-xl'
+          : 'bg-white py-3 lg:bg-transparent lg:py-5'
       )}
     >
       <div className="section-container">
