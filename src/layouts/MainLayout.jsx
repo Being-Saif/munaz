@@ -14,11 +14,6 @@ const MainLayout = () => {
   }, [pathname]);
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      {/* Announcement Bar */}
-      <div className="bg-dark text-white text-center py-2 text-xs sm:text-sm font-body">
-        <p>✨ Free Shipping on Orders Above ₹500 | Easy Returns | 24/7 Support</p>
-      </div>
-
       {/* Navbar */}
       <Navbar />
 
