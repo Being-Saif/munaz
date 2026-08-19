@@ -4,16 +4,20 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import banners from '@data/banners.json';
+import useApi from '@hooks/useApi';
+import bannersData from '@data/banners.json';
 
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 
-const heroSlides = banners.filter((b) => b.position === 'hero');
-
 const HeroBanner = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const { data: banners } = useApi('/banners?position=hero', bannersData.filter(b => b.position === 'hero'));
+
+  const heroSlides = banners.length > 0 ? banners : bannersData.filter(b => b.position === 'hero');
+
+  if (heroSlides.length === 0) return null;
 
   return (
     <section className="relative w-full">
@@ -37,23 +41,19 @@ const HeroBanner = () => {
         className="w-full"
       >
         {heroSlides.map((slide, index) => (
-          <SwiperSlide key={slide.id}>
+          <SwiperSlide key={slide._id || slide.id}>
             <div className="relative w-full h-[55vh] sm:h-[65vh] lg:h-[80vh]">
-              {/* Full-Width Image */}
               <img
                 src={slide.image}
                 alt={slide.subtitle}
                 className="w-full h-full object-cover"
               />
-
-              {/* Subtle gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-              {/* Minimal Text Overlay - bottom left like biba.in */}
               <AnimatePresence mode="wait">
                 {activeIndex === index && (
                   <motion.div
-                    key={slide.id}
+                    key={slide._id || slide.id}
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
@@ -84,10 +84,8 @@ const HeroBanner = () => {
         ))}
       </Swiper>
 
-      {/* Custom Pagination Dots */}
       <div className="hero-pagination absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2" />
 
-      {/* Pagination Styles */}
       <style>{`
         .hero-bullet {
           width: 8px;
