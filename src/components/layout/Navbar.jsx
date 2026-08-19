@@ -38,8 +38,8 @@ const Navbar = () => {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-velora',
         isScrolled
-          ? 'glass shadow-md py-4 lg:py-5'
-          : 'bg-white/95 backdrop-blur-sm shadow-sm py-4 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:py-7'
+          ? 'bg-white shadow-md py-3 lg:py-4 backdrop-blur-xl'
+          : 'bg-white py-3 lg:bg-transparent lg:py-7'
       )}
     >
       <div className="section-container">
@@ -129,7 +129,7 @@ const Navbar = () => {
                 if (isAuthenticated) {
                   navigate('/account');
                 } else {
-                  setAuthPrompt({ open: true, type: 'profile' });
+                  navigate('/login');
                 }
               }}
               className="flex p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
