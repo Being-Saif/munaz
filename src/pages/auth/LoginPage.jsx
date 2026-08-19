@@ -32,14 +32,14 @@ const LoginPage = () => {
     if (!validate()) return;
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
 
-    const result = loginUser(email, password);
+    const result = await loginUser(email, password);
     setIsLoading(false);
 
     if (result.success) {
-      dispatch(setCredentials({ user: result.user, accessToken: 'demo_token_' + Date.now() }));
-      toast.success(`Welcome back, ${result.user.firstName}! 🎉`);
+      dispatch(setCredentials({ user: result.user, accessToken: result.token || 'demo_token' }));
+      if (result.token) localStorage.setItem('munaz_token', result.token);
+      toast.success(`Welcome back${result.user.name ? ', ' + result.user.name.split(' ')[0] : ''}! 🎉`);
       navigate('/');
     } else {
       setErrors({ password: result.error });
