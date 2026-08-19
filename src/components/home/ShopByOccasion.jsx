@@ -36,7 +36,7 @@ const ShopByOccasion = () => {
               transition={{ delay: index * 0.1, duration: 0.5 }}
             >
               <Link to={occasion.link} className="group block relative overflow-hidden rounded-xl aspect-[3/4]">
-                <img src={occasion.image} alt={occasion.name} className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-110" />
+                <img loading="lazy" src={occasion.image} alt={occasion.name} className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/20 to-transparent group-hover:from-primary/80 transition-all duration-300" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 lg:p-6 text-white">
                   <h3 className="font-heading text-lg sm:text-xl lg:text-2xl font-bold mb-0.5">{occasion.name}</h3>

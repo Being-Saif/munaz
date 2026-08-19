@@ -61,7 +61,7 @@ const TrendingCarousel = () => {
             <SwiperSlide key={product._id || product.id}>
               <Link to={`/product/${product.slug}`} className="group block">
                 <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-100 mb-3">
-                  <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <img loading="lazy" src={product.thumbnail} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   {product.isOnSale && (
                     <span className="absolute top-2 left-2 bg-secondary text-white text-[10px] font-button font-semibold px-2 py-0.5 rounded">
                       {product.discountPercent}% OFF

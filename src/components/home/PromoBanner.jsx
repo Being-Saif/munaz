@@ -18,7 +18,7 @@ const PromoBanner = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <Link to={banner.link} className="group block relative overflow-hidden rounded-xl">
-              <img src={banner.image} alt={banner.subtitle} className="w-full h-[200px] sm:h-[280px] lg:h-[350px] object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+              <img loading="lazy" src={banner.image} alt={banner.subtitle} className="w-full h-[200px] sm:h-[280px] lg:h-[350px] object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
               <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/40 to-transparent flex items-center">
                 <div className="px-8 sm:px-12 lg:px-16">
                   <p className="text-white/80 font-button text-xs sm:text-sm uppercase tracking-wider mb-1">{banner.title}</p>
@@ -43,7 +43,7 @@ const PromoBanner = () => {
           {promoBanners.slice(0, 2).map((banner, index) => (
             <motion.div key={banner._id || banner.id} initial={{ opacity: 0, x: index === 0 ? -30 : 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: index * 0.1 }}>
               <Link to={banner.link} className="group block relative overflow-hidden rounded-xl">
-                <img src={banner.image} alt={banner.subtitle} className="w-full h-[180px] sm:h-[220px] lg:h-[280px] object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+                <img loading="lazy" src={banner.image} alt={banner.subtitle} className="w-full h-[180px] sm:h-[220px] lg:h-[280px] object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex items-end">
                   <div className="p-5 sm:p-6">
                     <p className="text-white/70 font-button text-[10px] sm:text-xs uppercase tracking-wider mb-1">{banner.title}</p>
