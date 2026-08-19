@@ -46,7 +46,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo — Bigger */}
           <Link to="/" className="flex-shrink-0">
-            <h1 className="font-heading text-3xl sm:text-4xl lg:text-[2.5rem] font-bold italic text-dark tracking-wide">
+            <h1 className="font-heading text-2xl sm:text-3xl lg:text-[2.5rem] font-bold italic text-dark tracking-wide">
               {APP_NAME}
             </h1>
           </Link>
@@ -69,17 +69,17 @@ const Navbar = () => {
             ))}
           </nav>
 
-          {/* Action Icons — More spacious */}
-          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
-            {/* Search */}
+          {/* Action Icons */}
+          <div className="flex items-center gap-1 sm:gap-2 lg:gap-4">
+            {/* Search - desktop only */}
             <button
-              className="p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
+              className="hidden sm:flex p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
               aria-label="Search"
             >
               <Search size={22} className="text-dark/80" />
             </button>
 
-            {/* Wishlist */}
+            {/* Wishlist - desktop only */}
             <button
               onClick={() => {
                 if (isAuthenticated) {
@@ -88,7 +88,7 @@ const Navbar = () => {
                   setAuthPrompt({ open: true, type: 'wishlist' });
                 }
               }}
-              className="relative p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
+              className="hidden sm:flex relative p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
               aria-label="Wishlist"
             >
               <Heart size={22} className="text-dark/80" />
@@ -103,7 +103,7 @@ const Navbar = () => {
               )}
             </button>
 
-            {/* Cart */}
+            {/* Cart - always visible */}
             <button
               onClick={() => dispatch(openCart())}
               className="relative p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
@@ -123,7 +123,7 @@ const Navbar = () => {
               )}
             </button>
 
-            {/* User */}
+            {/* User - desktop only */}
             <button
               onClick={() => {
                 if (isAuthenticated) {
@@ -132,13 +132,13 @@ const Navbar = () => {
                   navigate('/login');
                 }
               }}
-              className="flex p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
+              className="hidden sm:flex p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
               aria-label="Account"
             >
               <User size={22} className="text-dark/80" />
             </button>
 
-            {/* Mobile Menu Toggle */}
+            {/* Mobile Menu Toggle - mobile only */}
             <button
               onClick={() => dispatch(isMobileMenuOpen ? closeMobileMenu() : openMobileMenu())}
               className="lg:hidden p-2.5 rounded-full hover:bg-primary/5 transition-colors duration-300"
@@ -182,6 +182,22 @@ const Navbar = () => {
                   </Link>
                 </motion.div>
               ))}
+
+              {/* Mobile-only links */}
+              <div className="border-t border-border pt-4 mt-2 space-y-4">
+                <Link to="/wishlist" onClick={() => dispatch(closeMobileMenu())} className="flex items-center gap-3 text-dark/80 text-lg font-medium">
+                  <Heart size={20} /> Wishlist {wishlistCount > 0 && <span className="text-xs bg-secondary text-white px-2 py-0.5 rounded-full">{wishlistCount}</span>}
+                </Link>
+                {isAuthenticated ? (
+                  <Link to="/account" onClick={() => dispatch(closeMobileMenu())} className="flex items-center gap-3 text-dark/80 text-lg font-medium">
+                    <User size={20} /> My Account
+                  </Link>
+                ) : (
+                  <Link to="/login" onClick={() => dispatch(closeMobileMenu())} className="flex items-center gap-3 text-primary text-lg font-medium">
+                    <User size={20} /> Login / Sign Up
+                  </Link>
+                )}
+              </div>
             </nav>
           </motion.div>
         )}
