@@ -26,6 +26,7 @@ import AdminCategories from '@pages/admin/AdminCategories';
 import AdminBanners from '@pages/admin/AdminBanners';
 import AdminOrders from '@pages/admin/AdminOrders';
 import AdminCustomers from '@pages/admin/AdminCustomers';
+import ProtectedRoute from '@components/common/ProtectedRoute';
 
 const router = createBrowserRouter([
   // Main Layout (with Navbar + Footer)
@@ -45,10 +46,10 @@ const router = createBrowserRouter([
     ],
   },
 
-  // Admin Layout (separate dashboard layout)
+  // Admin Layout (protected - admin role required)
   {
     path: '/admin',
-    element: <AdminLayout />,
+    element: <ProtectedRoute role="admin"><AdminLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <AdminDashboard /> },
       { path: 'products', element: <AdminProducts /> },
