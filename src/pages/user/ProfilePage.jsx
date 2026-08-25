@@ -64,8 +64,9 @@ const ProfilePage = () => {
 
               {/* Name + Email */}
               <div className="flex-1">
-                <h1 className="font-heading text-xl sm:text-2xl text-dark">
-                  {user.firstName} {user.lastName}
+                <h1 className="font-heading text-xl sm:text-2xl text-dark flex items-center gap-2">
+                  {user.firstName || user.name?.split(' ')[0]} {user.lastName || user.name?.split(' ').slice(1).join(' ')}
+                  {user.role === 'admin' && <span className="text-yellow-500 text-lg">⭐</span>}
                 </h1>
                 <p className="text-text-secondary text-sm flex items-center gap-1.5 mt-0.5">
                   <Mail size={13} />
