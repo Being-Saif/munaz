@@ -1,215 +1,194 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Heart, ShoppingBag, User, Menu, X } from 'lucide-react';
+import { Heart, ShoppingBag, User, Menu, X } from 'lucide-react';
 import { cn } from '@utils/cn';
 import { NAV_LINKS, APP_NAME } from '@utils/constants';
 import { selectCartTotalItems } from '@redux/slices/cartSlice';
 import { selectWishlistCount } from '@redux/slices/wishlistSlice';
 import { selectIsAuthenticated } from '@redux/slices/authSlice';
-import { openCart, openMobileMenu, closeMobileMenu, selectIsMobileMenuOpen } from '@redux/slices/uiSlice';
+import { openCart } from '@redux/slices/uiSlice';
 import { isActiveRoute } from '@utils/helpers';
-import AuthPromptModal from '@components/common/AuthPromptModal';
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [authPrompt, setAuthPrompt] = useState({ open: false, type: 'default' });
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const cartCount = useSelector(selectCartTotalItems);
   const wishlistCount = useSelector(selectWishlistCount);
-  const isMobileMenuOpen = useSelector(selectIsMobileMenuOpen);
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  // Scroll detection for glass effect
+  // Close mobile menu on route change
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  // Scroll detection
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
-    <header
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled
-          ? 'bg-white shadow-md py-3 lg:py-3 backdrop-blur-xl'
-          : 'bg-white py-3 lg:bg-transparent lg:py-5'
-      )}
-    >
-      <div className="section-container">
-        <div className="flex items-center justify-between">
-          {/* Logo — Bigger */}
-          <Link to="/" className="flex-shrink-0">
-            <h1 className="font-heading text-2xl sm:text-3xl lg:text-[2.5rem] font-bold italic text-dark tracking-wide">
-              {APP_NAME}
-            </h1>
-          </Link>
+    <>
+      {/* Main Navbar */}
+      <header className={cn(
+        'fixed top-0 left-0 right-0 z-50 bg-white border-b transition-shadow duration-200',
+        scrolled ? 'shadow-md border-gray-100' : 'border-transparent'
+      )}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16">
 
-          {/* Desktop Navigation — Larger text, more gap */}
-          <nav className="hidden lg:flex items-center gap-10 xl:gap-12">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={cn(
-                  'font-body text-[15px] font-medium transition-colors duration-300 link-hover py-1',
-                  isActiveRoute(location.pathname, link.href)
-                    ? 'text-primary'
-                    : 'text-dark/80 hover:text-primary'
-                )}
+            {/* Left: Hamburger (mobile) + Logo */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="lg:hidden p-1.5 -ml-1.5 rounded-md hover:bg-gray-100"
+                aria-label="Toggle menu"
               >
-                {link.label}
+                {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+              </button>
+
+              <Link to="/" className="flex-shrink-0">
+                <span className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold italic text-dark">
+                  {APP_NAME}
+                </span>
               </Link>
-            ))}
-          </nav>
+            </div>
 
-          {/* Action Icons */}
-          <div className="flex items-center gap-1 sm:gap-2 lg:gap-4">
-            {/* Search - desktop only */}
-            <button
-              className="hidden sm:flex p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
-              aria-label="Search"
-            >
-              <Search size={22} className="text-dark/80" />
-            </button>
-
-            {/* Wishlist - desktop only */}
-            <button
-              onClick={() => {
-                if (isAuthenticated) {
-                  navigate('/wishlist');
-                } else {
-                  setAuthPrompt({ open: true, type: 'wishlist' });
-                }
-              }}
-              className="hidden sm:flex relative p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
-              aria-label="Wishlist"
-            >
-              <Heart size={22} className="text-dark/80" />
-              {wishlistCount > 0 && (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="absolute top-0.5 right-0.5 w-5 h-5 bg-secondary text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm"
+            {/* Center: Desktop Nav Links */}
+            <nav className="hidden lg:flex items-center gap-8">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={cn(
+                    'text-sm font-medium transition-colors',
+                    isActiveRoute(location.pathname, link.href)
+                      ? 'text-primary'
+                      : 'text-gray-700 hover:text-primary'
+                  )}
                 >
-                  {wishlistCount}
-                </motion.span>
-              )}
-            </button>
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
 
-            {/* Cart - always visible */}
-            <button
-              onClick={() => dispatch(openCart())}
-              className="relative p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
-              aria-label="Shopping Cart"
-            >
-              <ShoppingBag size={22} className="text-dark/80" />
-              {cartCount > 0 && (
-                <motion.span
-                  key={cartCount}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-                  className="absolute top-0.5 right-0.5 w-5 h-5 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm"
-                >
-                  {cartCount}
-                </motion.span>
-              )}
-            </button>
+            {/* Right: Icons */}
+            <div className="flex items-center gap-1 sm:gap-2">
+              {/* Wishlist - hidden on small mobile */}
+              <button
+                onClick={() => isAuthenticated ? navigate('/wishlist') : navigate('/login')}
+                className="hidden sm:flex relative p-2 rounded-md hover:bg-gray-100"
+                aria-label="Wishlist"
+              >
+                <Heart size={20} className="text-gray-700" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
 
-            {/* User - desktop only */}
-            <button
-              onClick={() => {
-                if (isAuthenticated) {
-                  navigate('/account');
-                } else {
-                  navigate('/login');
-                }
-              }}
-              className="hidden sm:flex p-2.5 lg:p-3 rounded-full hover:bg-primary/5 transition-colors duration-300"
-              aria-label="Account"
-            >
-              <User size={22} className="text-dark/80" />
-            </button>
+              {/* Cart */}
+              <button
+                onClick={() => dispatch(openCart())}
+                className="relative p-2 rounded-md hover:bg-gray-100"
+                aria-label="Cart"
+              >
+                <ShoppingBag size={20} className="text-gray-700" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
 
-            {/* Mobile Menu Toggle - mobile only */}
-            <button
-              onClick={() => dispatch(isMobileMenuOpen ? closeMobileMenu() : openMobileMenu())}
-              className="lg:hidden p-2.5 rounded-full hover:bg-primary/5 transition-colors duration-300"
-              aria-label="Menu"
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              {/* User */}
+              <button
+                onClick={() => isAuthenticated ? navigate('/account') : navigate('/login')}
+                className="p-2 rounded-md hover:bg-gray-100"
+                aria-label="Account"
+              >
+                <User size={20} className="text-gray-700" />
+              </button>
+            </div>
           </div>
         </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setMobileOpen(false)}>
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
+      )}
+
+      {/* Mobile Slide-in Menu */}
+      <div className={cn(
+        'fixed top-14 left-0 w-72 h-[calc(100vh-3.5rem)] bg-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden shadow-xl overflow-y-auto',
+        mobileOpen ? 'translate-x-0' : '-translate-x-full'
+      )}>
+        <nav className="p-5 space-y-1">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              to={link.href}
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                'block px-3 py-2.5 rounded-lg text-base font-medium transition-colors',
+                isActiveRoute(location.pathname, link.href)
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-gray-700 hover:bg-gray-50'
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          {/* Divider */}
+          <div className="border-t border-gray-100 my-3" />
+
+          {/* Extra Links */}
+          <Link
+            to="/wishlist"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-50"
+          >
+            <Heart size={18} />
+            Wishlist
+            {wishlistCount > 0 && <span className="ml-auto text-xs bg-secondary text-white px-2 py-0.5 rounded-full">{wishlistCount}</span>}
+          </Link>
+
+          {isAuthenticated ? (
+            <Link
+              to="/account"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-50"
+            >
+              <User size={18} />
+              My Account
+            </Link>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-base font-medium text-primary hover:bg-primary/5"
+            >
+              <User size={18} />
+              Login / Sign Up
+            </Link>
+          )}
+        </nav>
       </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="lg:hidden bg-surface border-t border-border overflow-hidden"
-          >
-            <nav className="section-container py-8 flex flex-col gap-5">
-              {NAV_LINKS.map((link, index) => (
-                <motion.div
-                  key={link.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <Link
-                    to={link.href}
-                    onClick={() => dispatch(closeMobileMenu())}
-                    className={cn(
-                      'block text-xl font-medium py-2 transition-colors',
-                      isActiveRoute(location.pathname, link.href)
-                        ? 'text-primary'
-                        : 'text-dark/80 hover:text-primary'
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
-
-              {/* Mobile-only links */}
-              <div className="border-t border-border pt-4 mt-2 space-y-4">
-                <Link to="/wishlist" onClick={() => dispatch(closeMobileMenu())} className="flex items-center gap-3 text-dark/80 text-lg font-medium">
-                  <Heart size={20} /> Wishlist {wishlistCount > 0 && <span className="text-xs bg-secondary text-white px-2 py-0.5 rounded-full">{wishlistCount}</span>}
-                </Link>
-                {isAuthenticated ? (
-                  <Link to="/account" onClick={() => dispatch(closeMobileMenu())} className="flex items-center gap-3 text-dark/80 text-lg font-medium">
-                    <User size={20} /> My Account
-                  </Link>
-                ) : (
-                  <Link to="/login" onClick={() => dispatch(closeMobileMenu())} className="flex items-center gap-3 text-primary text-lg font-medium">
-                    <User size={20} /> Login / Sign Up
-                  </Link>
-                )}
-              </div>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Auth Prompt Modal */}
-      <AuthPromptModal
-        isOpen={authPrompt.open}
-        onClose={() => setAuthPrompt({ open: false, type: 'default' })}
-        type={authPrompt.type}
-      />
-    </header>
+      {/* Spacer to prevent content from hiding behind fixed navbar */}
+      <div className="h-14 sm:h-16" />
+    </>
   );
 };
 

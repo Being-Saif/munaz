@@ -39,7 +39,7 @@ const WishlistPage = () => {
   };
 
   return (
-    <div className="pt-28 lg:pt-32 pb-16">
+    <div className="pt-6 lg:pt-8 pb-16">
       <div className="section-container">
         {/* Header */}
         <motion.div

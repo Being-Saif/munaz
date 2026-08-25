@@ -96,7 +96,7 @@ const CheckoutPage = () => {
   // Order Success Screen
   if (orderPlaced) {
     return (
-      <div className="pt-28 lg:pt-32 pb-16">
+      <div className="pt-6 lg:pt-8 pb-16">
         <div className="section-container max-w-lg mx-auto text-center">
           <motion.div
             initial={{ scale: 0 }}
@@ -149,7 +149,7 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="pt-28 lg:pt-32 pb-16">
+    <div className="pt-6 lg:pt-8 pb-16">
       <div className="section-container max-w-4xl mx-auto">
         {/* Progress Steps */}
         <div className="flex items-center justify-between mb-8 px-2">

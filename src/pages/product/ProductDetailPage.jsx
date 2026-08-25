@@ -48,7 +48,7 @@ const ProductDetailPage = () => {
 
   if (!product) {
     return (
-      <div className="pt-32 pb-20 text-center section-container">
+      <div className="pt-8 pb-20 text-center section-container">
         <h1 className="font-heading text-2xl text-dark mb-4">Product Not Found</h1>
         <Link to="/shop" className="btn-primary text-sm">Back to Shop</Link>
       </div>
@@ -87,7 +87,7 @@ const ProductDetailPage = () => {
   };
 
   return (
-    <div className="pt-28 lg:pt-32 pb-16">
+    <div className="pt-6 lg:pt-8 pb-16">
       <div className="section-container">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-text-muted mb-6">
