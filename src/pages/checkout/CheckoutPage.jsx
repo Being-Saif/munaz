@@ -7,6 +7,7 @@ import { selectCartItems, selectCartSubtotal, selectCartTotal, clearCart } from 
 import { selectCurrentUser } from '@redux/slices/authSlice';
 import { formatPrice } from '@utils/formatters';
 import { cn } from '@utils/cn';
+import useRazorpay from '@hooks/useRazorpay';
 import toast from 'react-hot-toast';
 
 const steps = [
@@ -29,6 +30,7 @@ const CheckoutPage = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { initiatePayment } = useRazorpay();
   const items = useSelector(selectCartItems);
   const subtotal = useSelector(selectCartSubtotal);
   const total = useSelector(selectCartTotal);
@@ -58,12 +60,37 @@ const CheckoutPage = () => {
   const prevStep = () => setCurrentStep((s) => Math.max(s - 1, 1));
 
   const placeOrder = async () => {
-    setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsProcessing(false);
-    setOrderPlaced(true);
-    dispatch(clearCart());
-    toast.success('Order placed successfully! 🎉');
+    const shippingCost = shippingMethod === 'express' ? 99 : 0;
+    const finalTotal = subtotal + shippingCost;
+
+    if (paymentMethod === 'cod') {
+      // Cash on Delivery — place order directly
+      setIsProcessing(true);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setIsProcessing(false);
+      setOrderPlaced(true);
+      dispatch(clearCart());
+      toast.success('Order placed successfully! 🎉');
+    } else {
+      // Online payment — Razorpay (UPI / Card / Net Banking)
+      setIsProcessing(true);
+      await initiatePayment({
+        amount: finalTotal,
+        orderId: `MNZ_${Date.now()}`,
+        customerName: address.fullName || user?.name,
+        customerEmail: user?.email,
+        customerPhone: address.phone,
+        onSuccess: () => {
+          setIsProcessing(false);
+          setOrderPlaced(true);
+          dispatch(clearCart());
+          toast.success('Payment successful! Order placed! 🎉');
+        },
+        onFailure: () => {
+          setIsProcessing(false);
+        },
+      });
+    }
   };
 
   // Order Success Screen
