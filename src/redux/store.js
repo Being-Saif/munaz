@@ -13,11 +13,11 @@ const cartPersistConfig = {
   whitelist: ['items', 'totalItems', 'subtotal', 'total'],
 };
 
-// Persist config for auth - only persist if user explicitly logged in
+// Persist config for auth - keep user logged in across refreshes
 const authPersistConfig = {
   key: 'munaz-auth',
   storage,
-  whitelist: [], // Don't persist auth by default - user must login each session
+  whitelist: ['user', 'accessToken', 'isAuthenticated'],
 };
 
 // Persist config for wishlist
