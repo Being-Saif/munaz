@@ -1,10 +1,18 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import categories from '@data/categories.json';
-import products from '@data/products.json';
+import useApi from '@hooks/useApi';
+import categoriesData from '@data/categories.json';
+import productsData from '@data/products.json';
 
 const CategoriesPage = () => {
+  const { data: categoriesApi } = useApi('/categories', categoriesData);
+  const { data: productsApi } = useApi('/products?limit=100', productsData);
+  const categories = categoriesApi.length > 0 ? categoriesApi : categoriesData;
+  const products = productsApi.length > 0 ? productsApi : productsData;
+
+  const getCategorySlug = (p) => (typeof p.category === 'object' && p.category ? p.category.slug : p.category);
+
   return (
     <div className="pt-6 lg:pt-8 pb-16">
       <div className="section-container">
@@ -26,11 +34,11 @@ const CategoriesPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
           {categories.map((category, index) => {
             // Get sample products for this category
-            const categoryProducts = products.filter((p) => p.category === category.slug).slice(0, 3);
+            const categoryProducts = products.filter((p) => getCategorySlug(p) === category.slug).slice(0, 3);
 
             return (
               <motion.div
-                key={category.id}
+                key={category._id || category.id}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -70,7 +78,7 @@ const CategoriesPage = () => {
                     {categoryProducts.length > 0 && (
                       <div className="flex items-center gap-2 mb-3">
                         {categoryProducts.map((product) => (
-                          <div key={product.id} className="w-10 h-10 rounded-md overflow-hidden border border-border">
+                          <div key={product._id || product.id} className="w-10 h-10 rounded-md overflow-hidden border border-border">
                             <img src={product.thumbnail} alt="" className="w-full h-full object-cover" />
                           </div>
                         ))}

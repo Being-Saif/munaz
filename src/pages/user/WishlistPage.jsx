@@ -6,17 +6,20 @@ import { selectWishlistItems, removeFromWishlist } from '@redux/slices/wishlistS
 import { addToCart } from '@redux/slices/cartSlice';
 import { openCart } from '@redux/slices/uiSlice';
 import { formatPrice, calculateDiscount } from '@utils/formatters';
-import products from '@data/products.json';
+import useApi from '@hooks/useApi';
+import productsData from '@data/products.json';
 import toast from 'react-hot-toast';
 import { cn } from '@utils/cn';
 
 const WishlistPage = () => {
   const dispatch = useDispatch();
   const wishlistIds = useSelector(selectWishlistItems);
+  const { data: productsApi } = useApi('/products?limit=100', productsData);
+  const products = productsApi.length > 0 ? productsApi : productsData;
 
-  // Get full product data for wishlisted items
+  // Get full product data for wishlisted items (handle both _id and id)
   const wishlistProducts = wishlistIds
-    .map((id) => products.find((p) => p.id === id))
+    .map((id) => products.find((p) => (p._id || p.id) === id))
     .filter(Boolean);
 
   const handleRemove = (productId) => {
@@ -26,7 +29,7 @@ const WishlistPage = () => {
 
   const handleAddToCart = (product) => {
     dispatch(addToCart({
-      productId: product.id,
+      productId: product._id || product.id,
       name: product.name,
       image: product.thumbnail,
       price: product.salePrice || product.price,

@@ -30,8 +30,18 @@ const ProductDetailPage = () => {
   const { data: allProducts } = useApi('/products?limit=100', productsData);
 
   // Use API product, fallback to JSON lookup
-  const product = apiProduct || productsData.find((p) => p.slug === slug);
+  const rawProduct = apiProduct || productsData.find((p) => p.slug === slug);
   const products = allProducts.length > 0 ? allProducts : productsData;
+
+  // Normalize product — ensure images/colors/sizes always exist
+  const product = rawProduct ? {
+    ...rawProduct,
+    images: (rawProduct.images && rawProduct.images.length > 0)
+      ? rawProduct.images
+      : [{ id: 'thumb', url: rawProduct.thumbnail, alt: rawProduct.name }],
+    colors: rawProduct.colors || [],
+    sizes: rawProduct.sizes || [],
+  } : null;
 
   const isWishlisted = useSelector(selectIsWishlisted(product?._id || product?.id || ''));
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -82,7 +92,7 @@ const ProductDetailPage = () => {
       setAuthPrompt({ open: true, type: 'cart' });
       return;
     }
-    if (!selectedSize) {
+    if (product.sizes.length > 0 && !selectedSize) {
       toast.error('Please select a size');
       return;
     }
@@ -91,8 +101,8 @@ const ProductDetailPage = () => {
       name: product.name,
       image: product.thumbnail,
       price: product.salePrice || product.price,
-      color: selectedColor,
-      size: selectedSize,
+      color: selectedColor || 'Default',
+      size: selectedSize || 'Free Size',
       quantity,
     }));
     dispatch(openCart());
@@ -117,8 +127,8 @@ const ProductDetailPage = () => {
           <ChevronRight size={14} />
           <Link to="/shop" className="hover:text-primary transition-colors">Shop</Link>
           <ChevronRight size={14} />
-          <Link to={`/shop?category=${product.category}`} className="hover:text-primary transition-colors capitalize">
-            {product.category}
+          <Link to={`/shop?category=${typeof product.category === 'object' ? product.category?.slug : product.category}`} className="hover:text-primary transition-colors capitalize">
+            {typeof product.category === 'object' ? product.category?.name : product.category}
           </Link>
           <ChevronRight size={14} />
           <span className="text-dark font-medium truncate">{product.name}</span>
@@ -226,6 +236,7 @@ const ProductDetailPage = () => {
             </p>
 
             {/* Color Selector */}
+            {product.colors.length > 0 && (
             <div className="mb-5">
               <p className="text-sm font-medium text-dark mb-2.5">
                 Color: <span className="text-text-secondary font-normal">{selectedColor}</span>
@@ -247,8 +258,10 @@ const ProductDetailPage = () => {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Size Selector */}
+            {product.sizes.length > 0 && (
             <div className="mb-5">
               <p className="text-sm font-medium text-dark mb-2.5">Size:</p>
               <div className="flex flex-wrap gap-2">
@@ -271,6 +284,7 @@ const ProductDetailPage = () => {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Quantity */}
             <div className="mb-6">
