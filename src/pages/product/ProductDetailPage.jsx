@@ -13,7 +13,8 @@ import { selectIsAuthenticated } from '@redux/slices/authSlice';
 import { openCart } from '@redux/slices/uiSlice';
 import ProductGrid from '@components/product/ProductGrid';
 import AuthPromptModal from '@components/common/AuthPromptModal';
-import products from '@data/products.json';
+import useApi from '@hooks/useApi';
+import productsData from '@data/products.json';
 import reviews from '@data/reviews.json';
 import toast from 'react-hot-toast';
 
@@ -24,11 +25,18 @@ const ProductDetailPage = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
 
-  const product = products.find((p) => p.slug === slug);
-  const isWishlisted = useSelector(selectIsWishlisted(product?.id || ''));
+  // Fetch product from API by slug (fallback to JSON)
+  const { data: apiProduct, loading } = useApi(`/products/${slug}`, null);
+  const { data: allProducts } = useApi('/products?limit=100', productsData);
+
+  // Use API product, fallback to JSON lookup
+  const product = apiProduct || productsData.find((p) => p.slug === slug);
+  const products = allProducts.length > 0 ? allProducts : productsData;
+
+  const isWishlisted = useSelector(selectIsWishlisted(product?._id || product?.id || ''));
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0]?.name || '');
+  const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
@@ -36,15 +44,29 @@ const ProductDetailPage = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [authPrompt, setAuthPrompt] = useState({ open: false, type: 'default' });
 
-  const productReviews = reviews.filter((r) => r.productId === product?.id);
+  const productReviews = reviews.filter((r) => r.productId === (product?._id || product?.id));
   const discount = product ? calculateDiscount(product.price, product.salePrice) : 0;
 
   const relatedProducts = useMemo(() => {
     if (!product) return [];
+    const catId = typeof product.category === 'object' ? product.category?._id : product.category;
     return products
-      .filter((p) => p.category === product.category && p.id !== product.id)
+      .filter((p) => {
+        const pCat = typeof p.category === 'object' ? p.category?._id : p.category;
+        return pCat === catId && (p._id || p.id) !== (product._id || product.id);
+      })
       .slice(0, 4);
-  }, [product]);
+  }, [product, products]);
+
+  // Loading state
+  if (loading && !product) {
+    return (
+      <div className="pt-8 pb-20 text-center section-container">
+        <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mt-20" />
+        <p className="text-text-secondary text-sm mt-4">Loading product...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -65,7 +87,7 @@ const ProductDetailPage = () => {
       return;
     }
     dispatch(addToCart({
-      productId: product.id,
+      productId: product._id || product.id,
       name: product.name,
       image: product.thumbnail,
       price: product.salePrice || product.price,
@@ -82,7 +104,7 @@ const ProductDetailPage = () => {
       setAuthPrompt({ open: true, type: 'wishlist' });
       return;
     }
-    dispatch(toggleWishlist(product.id));
+    dispatch(toggleWishlist(product._id || product.id));
     toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist! ❤️');
   };
 
