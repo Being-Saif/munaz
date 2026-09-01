@@ -3,8 +3,9 @@ import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import ProductGrid from '@components/product/ProductGrid';
-import products from '@data/products.json';
-import categories from '@data/categories.json';
+import useApi from '@hooks/useApi';
+import productsData from '@data/products.json';
+import categoriesData from '@data/categories.json';
 import { cn } from '@utils/cn';
 import { SORT_OPTIONS, SIZES } from '@utils/constants';
 import { formatPrice } from '@utils/formatters';
@@ -25,14 +26,25 @@ const ShopPage = () => {
   const categoryParam = searchParams.get('category') || '';
   const filterParam = searchParams.get('filter') || '';
 
+  // Fetch from live API (fallback to JSON)
+  const { data: apiProducts } = useApi('/products?limit=100', productsData);
+  const { data: categories } = useApi('/categories', categoriesData);
+  const products = apiProducts.length > 0 ? apiProducts : productsData;
+
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [sortBy, setSortBy] = useState('popular');
   const [filters, setFilters] = useState({
     category: categoryParam,
-    priceRange: [0, 200],
+    priceRange: [0, 10000],
     sizes: [],
     colors: [],
   });
+
+  // Helper: get category slug from product (handles both string and object)
+  const getCategorySlug = (p) => {
+    if (typeof p.category === 'object' && p.category) return p.category.slug;
+    return p.category;
+  };
 
   // Apply filter from URL params
   const getInitialProducts = () => {
@@ -49,7 +61,7 @@ const ShopPage = () => {
 
     // Category filter
     if (filters.category) {
-      result = result.filter((p) => p.category === filters.category);
+      result = result.filter((p) => getCategorySlug(p) === filters.category);
     }
 
     // Price filter
@@ -61,37 +73,37 @@ const ShopPage = () => {
     // Size filter
     if (filters.sizes.length > 0) {
       result = result.filter((p) =>
-        p.sizes.some((s) => filters.sizes.includes(s.name) && s.stock > 0)
+        p.sizes?.some((s) => filters.sizes.includes(s.name) && s.stock > 0)
       );
     }
 
     // Color filter
     if (filters.colors.length > 0) {
       result = result.filter((p) =>
-        p.colors.some((c) => filters.colors.includes(c.name))
+        p.colors?.some((c) => filters.colors.includes(c.name))
       );
     }
 
     // Sort
     switch (sortBy) {
       case 'newest':
-        result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        result = [...result].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         break;
       case 'price-low':
-        result.sort((a, b) => (a.salePrice || a.price) - (b.salePrice || b.price));
+        result = [...result].sort((a, b) => (a.salePrice || a.price) - (b.salePrice || b.price));
         break;
       case 'price-high':
-        result.sort((a, b) => (b.salePrice || b.price) - (a.salePrice || a.price));
+        result = [...result].sort((a, b) => (b.salePrice || b.price) - (a.salePrice || a.price));
         break;
       case 'rating':
-        result.sort((a, b) => b.ratingsAverage - a.ratingsAverage);
+        result = [...result].sort((a, b) => (b.ratingsAverage || 0) - (a.ratingsAverage || 0));
         break;
       default:
-        result.sort((a, b) => b.sold - a.sold);
+        result = [...result].sort((a, b) => (b.sold || 0) - (a.sold || 0));
     }
 
     return result;
-  }, [filters, sortBy, filterParam]);
+  }, [filters, sortBy, filterParam, products]);
 
   const toggleSize = (size) => {
     setFilters((prev) => ({
@@ -112,10 +124,10 @@ const ShopPage = () => {
   };
 
   const clearFilters = () => {
-    setFilters({ category: '', priceRange: [0, 200], sizes: [], colors: [] });
+    setFilters({ category: '', priceRange: [0, 10000], sizes: [], colors: [] });
   };
 
-  const hasActiveFilters = filters.category || filters.sizes.length > 0 || filters.colors.length > 0 || filters.priceRange[1] < 200;
+  const hasActiveFilters = filters.category || filters.sizes.length > 0 || filters.colors.length > 0 || filters.priceRange[1] < 10000;
 
   // Sidebar Filters Component
   const FilterPanel = ({ className = '' }) => (
@@ -137,7 +149,7 @@ const ShopPage = () => {
           </button>
           {categories.map((cat) => (
             <button
-              key={cat.id}
+              key={cat._id || cat.id}
               onClick={() => setFilters((p) => ({ ...p, category: cat.slug }))}
               className={cn(
                 'flex items-center justify-between text-sm transition-colors w-full text-left py-1',
@@ -158,8 +170,8 @@ const ShopPage = () => {
         </h3>
         <input
           type="range"
-          min="0"
-          max="200"
+          min="0" step="100"
+          max="10000"
           value={filters.priceRange[1]}
           onChange={(e) => setFilters((p) => ({ ...p, priceRange: [0, Number(e.target.value)] }))}
           className="w-full accent-primary"
