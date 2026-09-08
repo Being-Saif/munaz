@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Heart, ShoppingBag, User, Menu, X } from 'lucide-react';
+import { Heart, ShoppingBag, User, Menu, X, Search } from 'lucide-react';
 import { cn } from '@utils/cn';
 import { NAV_LINKS, APP_NAME } from '@utils/constants';
 import { selectCartTotalItems } from '@redux/slices/cartSlice';
@@ -13,6 +13,8 @@ import { isActiveRoute } from '@utils/helpers';
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -24,6 +26,7 @@ const Navbar = () => {
   // Close mobile menu on route change
   useEffect(() => {
     setMobileOpen(false);
+    setSearchOpen(false);
   }, [location.pathname]);
 
   // Scroll detection
@@ -32,6 +35,15 @@ const Navbar = () => {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+      setSearchOpen(false);
+    }
+  };
 
   return (
     <>
@@ -80,6 +92,15 @@ const Navbar = () => {
 
             {/* Right: Icons */}
             <div className="flex items-center gap-1 sm:gap-2">
+              {/* Search */}
+              <button
+                onClick={() => setSearchOpen(!searchOpen)}
+                className="p-2 rounded-md hover:bg-gray-100"
+                aria-label="Search"
+              >
+                <Search size={20} className="text-gray-700" />
+              </button>
+
               {/* Wishlist - hidden on small mobile */}
               <button
                 onClick={() => isAuthenticated ? navigate('/wishlist') : navigate('/login')}
@@ -118,6 +139,26 @@ const Navbar = () => {
               </button>
             </div>
           </div>
+
+          {/* Search Bar (expandable) */}
+          {searchOpen && (
+            <div className="pb-3 pt-1">
+              <form onSubmit={handleSearch} className="relative">
+                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search for kurtas, sarees, co-ords..."
+                  className="w-full pl-10 pr-20 py-2.5 rounded-lg border border-gray-200 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+                <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-primary text-white text-sm font-medium px-3 py-1.5 rounded-md hover:bg-primary-dark transition-colors">
+                  Search
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       </header>
 

@@ -25,6 +25,7 @@ const ShopPage = () => {
   const [searchParams] = useSearchParams();
   const categoryParam = searchParams.get('category') || '';
   const filterParam = searchParams.get('filter') || '';
+  const searchParam = searchParams.get('search') || '';
 
   // Fetch from live API (fallback to JSON)
   const { data: apiProducts } = useApi('/products?limit=100', productsData);
@@ -58,6 +59,17 @@ const ShopPage = () => {
   // Filter + Sort logic
   const filteredProducts = useMemo(() => {
     let result = getInitialProducts();
+
+    // Search filter (name, subcategory, tags)
+    if (searchParam) {
+      const q = searchParam.toLowerCase();
+      result = result.filter((p) =>
+        p.name?.toLowerCase().includes(q) ||
+        p.subcategory?.toLowerCase().includes(q) ||
+        p.brand?.toLowerCase().includes(q) ||
+        (p.tags && p.tags.some((t) => t.toLowerCase().includes(q)))
+      );
+    }
 
     // Category filter
     if (filters.category) {
@@ -103,7 +115,7 @@ const ShopPage = () => {
     }
 
     return result;
-  }, [filters, sortBy, filterParam, products]);
+  }, [filters, sortBy, filterParam, searchParam, products]);
 
   const toggleSize = (size) => {
     setFilters((prev) => ({

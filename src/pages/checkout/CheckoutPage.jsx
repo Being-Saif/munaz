@@ -8,6 +8,7 @@ import { selectCurrentUser } from '@redux/slices/authSlice';
 import { formatPrice } from '@utils/formatters';
 import { cn } from '@utils/cn';
 import useRazorpay from '@hooks/useRazorpay';
+import orderService from '@services/orderService';
 import toast from 'react-hot-toast';
 
 const steps = [
@@ -21,6 +22,7 @@ const CheckoutPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderNumber, setOrderNumber] = useState('');
 
   const [address, setAddress] = useState({
     fullName: '', phone: '', addressLine1: '', addressLine2: '', city: '', state: '', postalCode: '', country: 'India',
@@ -59,14 +61,55 @@ const CheckoutPage = () => {
 
   const prevStep = () => setCurrentStep((s) => Math.max(s - 1, 1));
 
+  const buildOrderPayload = (paymentStatus) => {
+    const shippingCost = shippingMethod === 'express' ? 99 : 0;
+    return {
+      items: items.map((it) => ({
+        product: it.productId,
+        name: it.name,
+        thumbnail: it.image,
+        color: it.color,
+        size: it.size,
+        price: it.price,
+        quantity: it.quantity,
+      })),
+      shippingAddress: {
+        fullName: address.fullName,
+        phone: address.phone,
+        address: `${address.addressLine1}${address.addressLine2 ? ', ' + address.addressLine2 : ''}`,
+        city: address.city,
+        state: address.state,
+        pincode: address.postalCode,
+      },
+      paymentMethod,
+      shippingMethod,
+      itemsTotal: subtotal,
+      shippingCost,
+      discount: 0,
+      totalAmount: subtotal + shippingCost,
+    };
+  };
+
+  const saveOrder = async () => {
+    try {
+      const res = await orderService.createOrder(buildOrderPayload());
+      if (res?.data?.orderNumber) {
+        setOrderNumber(res.data.orderNumber);
+      }
+    } catch (err) {
+      // Order still placed for user; log for debugging
+      console.error('Order save failed:', err.message);
+    }
+  };
+
   const placeOrder = async () => {
     const shippingCost = shippingMethod === 'express' ? 99 : 0;
     const finalTotal = subtotal + shippingCost;
 
     if (paymentMethod === 'cod') {
-      // Cash on Delivery — place order directly
+      // Cash on Delivery — save order directly
       setIsProcessing(true);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await saveOrder();
       setIsProcessing(false);
       setOrderPlaced(true);
       dispatch(clearCart());
@@ -80,7 +123,8 @@ const CheckoutPage = () => {
         customerName: address.fullName || user?.name,
         customerEmail: user?.email,
         customerPhone: address.phone,
-        onSuccess: () => {
+        onSuccess: async () => {
+          await saveOrder();
           setIsProcessing(false);
           setOrderPlaced(true);
           dispatch(clearCart());
