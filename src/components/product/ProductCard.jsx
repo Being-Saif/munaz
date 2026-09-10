@@ -169,7 +169,7 @@ const ProductCard = ({ product, index = 0, isHovered, onHover, onLeave }) => {
         <div className="p-2.5 sm:p-3">
           {/* Category */}
           <p className="text-text-muted text-[9px] sm:text-[10px] uppercase tracking-wider font-medium mb-0.5">
-            {product.subcategory || product.category}
+            {product.subcategory || (typeof product.category === 'object' ? product.category?.name : product.category)}
           </p>
 
           {/* Title */}

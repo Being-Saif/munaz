@@ -138,6 +138,7 @@ const AdminProducts = () => {
                   <th className="px-4 py-3 text-left font-medium hidden md:table-cell">Category</th>
                   <th className="px-4 py-3 text-left font-medium">Price</th>
                   <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Stock</th>
+                  <th className="px-4 py-3 text-left font-medium hidden lg:table-cell">Variants</th>
                   <th className="px-4 py-3 text-left font-medium">Status</th>
                   <th className="px-4 py-3 text-right font-medium">Actions</th>
                 </tr>
@@ -178,7 +179,18 @@ const AdminProducts = () => {
                         </>
                       ) : <span className="text-xs text-gray-400">—</span>}
                     </td>
-                    <td className={cn('px-4 py-3 text-sm hidden sm:table-cell', darkMode ? 'text-gray-300' : 'text-gray-600')}>{product.totalStock ?? 0}</td>
+                    <td className={cn('px-4 py-3 text-sm hidden sm:table-cell', darkMode ? 'text-gray-300' : 'text-gray-600')}>
+                      {product.totalStock || product.variants?.reduce((sum, v) => sum + (v.stock || 0), 0) || 0}
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      {product.variants?.length > 0 ? (
+                        <span className={cn('text-xs px-2 py-0.5 rounded-full font-medium', darkMode ? 'bg-primary/20 text-primary-light' : 'bg-primary/10 text-primary')}>
+                          {product.variants.length} variant{product.variants.length > 1 ? 's' : ''}
+                        </span>
+                      ) : (
+                        <span className={cn('text-xs', darkMode ? 'text-gray-500' : 'text-gray-400')}>No variants</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <button
                         onClick={() => product.status !== 'draft' && handleToggleActive(product)}
