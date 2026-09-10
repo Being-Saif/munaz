@@ -4,8 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import ProductGrid from '@components/product/ProductGrid';
 import useApi from '@hooks/useApi';
-import productsData from '@data/products.json';
-import categoriesData from '@data/categories.json';
 import { cn } from '@utils/cn';
 import { SORT_OPTIONS, SIZES } from '@utils/constants';
 import { formatPrice } from '@utils/formatters';
@@ -27,10 +25,9 @@ const ShopPage = () => {
   const filterParam = searchParams.get('filter') || '';
   const searchParam = searchParams.get('search') || '';
 
-  // Fetch from live API (fallback to JSON)
-  const { data: apiProducts } = useApi('/products?limit=100', productsData);
-  const { data: categories } = useApi('/categories', categoriesData);
-  const products = apiProducts.length > 0 ? apiProducts : productsData;
+  // Fetch from live API only — no static fallback
+  const { data: products, loading: productsLoading } = useApi('/products?limit=100', []);
+  const { data: categories } = useApi('/categories', []);
 
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [sortBy, setSortBy] = useState('popular');
@@ -330,11 +327,23 @@ const ShopPage = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                {filteredProducts.length > 0 ? (
+                {productsLoading ? (
+                  <div className="flex items-center justify-center py-20">
+                    <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  </div>
+                ) : filteredProducts.length > 0 ? (
                   <ProductGrid
                     products={filteredProducts}
                     columns={{ sm: 2, md: 3, lg: 3 }}
                   />
+                ) : products.length === 0 ? (
+                  <div className="text-center py-20">
+                    <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <SlidersHorizontal size={24} className="text-primary/40" />
+                    </div>
+                    <h3 className="font-heading text-lg text-dark mb-2">No products yet</h3>
+                    <p className="text-text-muted text-sm">Check back soon — new arrivals are on their way!</p>
+                  </div>
                 ) : (
                   <div className="text-center py-20">
                     <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4">

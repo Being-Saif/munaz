@@ -2,12 +2,11 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import useApi from '@hooks/useApi';
-import productsData from '@data/products.json';
 
 const NewArrivals = () => {
-  const { data: products } = useApi('/products?isNewArrival=true&limit=8', productsData.filter(p => p.isNewArrival || p.isFeatured).slice(0, 8));
+  const { data: products, loading } = useApi('/products?isNewArrival=true&limit=8', []);
 
-  const displayProducts = products.length > 0 ? products : productsData.filter(p => p.isNewArrival || p.isFeatured).slice(0, 8);
+  if (loading || products.length === 0) return null;
 
   return (
     <section className="py-10 sm:py-14 lg:py-16 bg-background">
@@ -35,7 +34,7 @@ const NewArrivals = () => {
         </motion.div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-          {displayProducts.map((product, index) => (
+          {products.map((product, index) => (
             <motion.div
               key={product._id || product.id}
               initial={{ opacity: 0, y: 30 }}

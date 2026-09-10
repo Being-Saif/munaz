@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import useApi from '@hooks/useApi';
-import categoriesData from '@data/categories.json';
 
 const CategoryStrip = () => {
-  const { data: categories } = useApi('/categories', categoriesData);
+  const { data: categories, loading } = useApi('/categories', []);
 
-  const displayCategories = categories.length > 0 ? categories : categoriesData;
+  if (loading || categories.length === 0) return null;
 
   return (
     <section className="py-10 sm:py-14 lg:py-16 bg-white">
@@ -27,7 +26,7 @@ const CategoryStrip = () => {
         </motion.div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-          {displayCategories.map((category, index) => (
+          {categories.map((category, index) => (
             <motion.div
               key={category._id || category.id}
               initial={{ opacity: 0, y: 30 }}

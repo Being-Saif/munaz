@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import useApi from '@hooks/useApi';
-import occasionsData from '@data/occasions.json';
 
 const ShopByOccasion = () => {
-  const { data: occasions } = useApi('/occasions', occasionsData);
+  const { data: occasions, loading } = useApi('/occasions', []);
 
-  const displayOccasions = occasions.length > 0 ? occasions : occasionsData;
+  if (loading || occasions.length === 0) return null;
 
   return (
     <section className="py-10 sm:py-14 lg:py-16 bg-white">
@@ -27,7 +26,7 @@ const ShopByOccasion = () => {
         </motion.div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-          {displayOccasions.map((occasion, index) => (
+          {occasions.map((occasion, index) => (
             <motion.div
               key={occasion._id || occasion.id}
               initial={{ opacity: 0, y: 30 }}

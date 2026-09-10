@@ -1,15 +1,11 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, FolderX } from 'lucide-react';
 import useApi from '@hooks/useApi';
-import categoriesData from '@data/categories.json';
-import productsData from '@data/products.json';
 
 const CategoriesPage = () => {
-  const { data: categoriesApi } = useApi('/categories', categoriesData);
-  const { data: productsApi } = useApi('/products?limit=100', productsData);
-  const categories = categoriesApi.length > 0 ? categoriesApi : categoriesData;
-  const products = productsApi.length > 0 ? productsApi : productsData;
+  const { data: categories, loading: categoriesLoading } = useApi('/categories', []);
+  const { data: products } = useApi('/products?limit=100', []);
 
   const getCategorySlug = (p) => (typeof p.category === 'object' && p.category ? p.category.slug : p.category);
 
@@ -30,7 +26,26 @@ const CategoriesPage = () => {
           </p>
         </motion.div>
 
+        {/* Loading */}
+        {categoriesLoading && (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!categoriesLoading && categories.length === 0 && (
+          <div className="text-center py-20">
+            <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FolderX size={24} className="text-primary/40" />
+            </div>
+            <h3 className="font-heading text-lg text-dark mb-2">No categories yet</h3>
+            <p className="text-text-muted text-sm">Check back soon!</p>
+          </div>
+        )}
+
         {/* Category Grid */}
+        {!categoriesLoading && categories.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
           {categories.map((category, index) => {
             // Get sample products for this category
@@ -99,6 +114,7 @@ const CategoriesPage = () => {
             );
           })}
         </div>
+        )}
       </div>
     </div>
   );

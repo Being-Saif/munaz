@@ -14,8 +14,6 @@ import { openCart } from '@redux/slices/uiSlice';
 import ProductGrid from '@components/product/ProductGrid';
 import AuthPromptModal from '@components/common/AuthPromptModal';
 import useApi from '@hooks/useApi';
-import productsData from '@data/products.json';
-import reviews from '@data/reviews.json';
 import toast from 'react-hot-toast';
 
 import 'swiper/css';
@@ -25,13 +23,9 @@ const ProductDetailPage = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
 
-  // Fetch product from API by slug (fallback to JSON)
-  const { data: apiProduct, loading } = useApi(`/products/${slug}`, null);
-  const { data: allProducts } = useApi('/products?limit=100', productsData);
-
-  // Use API product, fallback to JSON lookup
-  const rawProduct = apiProduct || productsData.find((p) => p.slug === slug);
-  const products = allProducts.length > 0 ? allProducts : productsData;
+  // Fetch product from live API by slug — no static fallback
+  const { data: rawProduct, loading } = useApi(`/products/${slug}`, null);
+  const { data: products } = useApi('/products?limit=100', []);
 
   // Normalize product — ensure images/colors/sizes always exist
   const product = rawProduct ? {
@@ -42,6 +36,9 @@ const ProductDetailPage = () => {
     colors: rawProduct.colors || [],
     sizes: rawProduct.sizes || [],
   } : null;
+
+  // Real reviews from the database for this product
+  const { data: productReviews } = useApi(product ? `/reviews/${product._id || product.id}` : null, []);
 
   const isWishlisted = useSelector(selectIsWishlisted(product?._id || product?.id || ''));
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -54,7 +51,6 @@ const ProductDetailPage = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [authPrompt, setAuthPrompt] = useState({ open: false, type: 'default' });
 
-  const productReviews = reviews.filter((r) => r.productId === (product?._id || product?.id));
   const discount = product ? calculateDiscount(product.price, product.salePrice) : 0;
 
   const relatedProducts = useMemo(() => {
@@ -378,7 +374,7 @@ const ProductDetailPage = () => {
           {activeTab === 'reviews' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 max-w-3xl">
               {productReviews.length > 0 ? productReviews.map((review) => (
-                <div key={review.id} className="p-4 bg-background rounded-lg">
+                <div key={review._id || review.id} className="p-4 bg-background rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="flex gap-0.5">
                       {[...Array(5)].map((_, i) => (

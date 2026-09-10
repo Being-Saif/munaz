@@ -5,7 +5,6 @@ import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import useApi from '@hooks/useApi';
-import bannersData from '@data/banners.json';
 
 import 'swiper/css';
 import 'swiper/css/effect-fade';
@@ -13,11 +12,9 @@ import 'swiper/css/pagination';
 
 const HeroBanner = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const { data: banners } = useApi('/banners?position=hero', bannersData.filter(b => b.position === 'hero'));
+  const { data: heroSlides, loading } = useApi('/banners?position=hero', []);
 
-  const heroSlides = banners.length > 0 ? banners : bannersData.filter(b => b.position === 'hero');
-
-  if (heroSlides.length === 0) return null;
+  if (loading || heroSlides.length === 0) return null;
 
   return (
     <section className="relative w-full">

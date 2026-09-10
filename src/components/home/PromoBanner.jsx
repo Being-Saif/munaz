@@ -2,14 +2,11 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import useApi from '@hooks/useApi';
-import bannersData from '@data/banners.json';
 
 const PromoBanner = () => {
-  const { data: banners } = useApi('/banners?position=promotional', bannersData.filter(b => b.position === 'promotional'));
+  const { data: promoBanners, loading } = useApi('/banners?position=promotional', []);
 
-  const promoBanners = banners.length > 0 ? banners : bannersData.filter(b => b.position === 'promotional');
-
-  if (promoBanners.length === 0) return null;
+  if (loading || promoBanners.length === 0) return null;
 
   if (promoBanners.length === 1) {
     const banner = promoBanners[0];

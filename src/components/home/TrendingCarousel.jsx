@@ -5,17 +5,14 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import useApi from '@hooks/useApi';
-import productsData from '@data/products.json';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 
 const TrendingCarousel = () => {
-  const { data: products } = useApi('/products?isTrending=true&limit=10', productsData.filter(p => p.isTrending || p.isBestSeller).slice(0, 10));
+  const { data: trendingProducts, loading } = useApi('/products?isTrending=true&limit=10', []);
 
-  const trendingProducts = products.length > 0 ? products : productsData.filter(p => p.isTrending || p.isBestSeller).slice(0, 10);
-
-  if (trendingProducts.length === 0) return null;
+  if (loading || trendingProducts.length === 0) return null;
 
   return (
     <section className="py-10 sm:py-14 lg:py-16 bg-background">
