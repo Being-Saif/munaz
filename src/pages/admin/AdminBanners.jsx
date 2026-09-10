@@ -13,6 +13,7 @@ const AdminBanners = () => {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [showDelete, setShowDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => { fetchBanners(); }, []);
 
@@ -48,12 +49,18 @@ const AdminBanners = () => {
   };
 
   const handleDelete = async (id) => {
+    if (deleting) return; // already deleting — ignore duplicate clicks/calls
+    setDeleting(true);
     try {
       await api.delete(`/banners/${id}`);
       setBanners(prev => prev.filter(b => b._id !== id));
       toast.success('Banner deleted');
-    } catch { toast.error('Failed to delete'); }
-    setShowDelete(null);
+      setShowDelete(null);
+    } catch {
+      toast.error('Failed to delete');
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const heroBanners = banners.filter(b => b.position === 'hero');
@@ -118,7 +125,13 @@ const AdminBanners = () => {
               <p className={cn('text-sm mt-2', darkMode ? 'text-gray-400' : 'text-gray-500')}>Delete &quot;{showDelete.subtitle}&quot;?</p>
               <div className="flex gap-3 mt-5">
                 <button onClick={() => setShowDelete(null)} className={cn('flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border', darkMode ? 'border-gray-600 text-gray-300' : 'border-gray-300 text-gray-700')}>Cancel</button>
-                <button onClick={() => handleDelete(showDelete._id)} className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600">Delete</button>
+                <button
+                  onClick={() => handleDelete(showDelete._id)}
+                  disabled={deleting}
+                  className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {deleting ? 'Deleting...' : 'Delete'}
+                </button>
               </div>
             </motion.div>
           </motion.div>

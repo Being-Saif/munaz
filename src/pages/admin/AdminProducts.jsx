@@ -23,6 +23,7 @@ const AdminProducts = () => {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showDelete, setShowDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -50,14 +51,18 @@ const AdminProducts = () => {
   }, [fetchProducts]);
 
   const handleDelete = async (id) => {
+    if (deleting) return;
+    setDeleting(true);
     try {
       await api.delete(`/products/${id}`);
       setProducts((prev) => prev.filter((p) => p._id !== id));
       toast.success('Product deleted');
+      setShowDelete(null);
     } catch (err) {
       toast.error('Failed to delete product');
+    } finally {
+      setDeleting(false);
     }
-    setShowDelete(null);
   };
 
   const handleToggleActive = async (product) => {
@@ -241,7 +246,13 @@ const AdminProducts = () => {
               <p className={cn('text-sm mt-2', darkMode ? 'text-gray-400' : 'text-gray-500')}>Are you sure you want to delete &quot;{showDelete.name || 'this draft'}&quot;? This action cannot be undone.</p>
               <div className="flex gap-3 mt-5">
                 <button onClick={() => setShowDelete(null)} className={cn('flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border', darkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50')}>Cancel</button>
-                <button onClick={() => handleDelete(showDelete._id)} className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors">Delete</button>
+                <button
+                  onClick={() => handleDelete(showDelete._id)}
+                  disabled={deleting}
+                  className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {deleting ? 'Deleting...' : 'Delete'}
+                </button>
               </div>
             </motion.div>
           </motion.div>
