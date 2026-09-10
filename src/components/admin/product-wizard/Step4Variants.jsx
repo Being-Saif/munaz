@@ -19,7 +19,7 @@ const isClothingCategory = (category) => {
  * Generate color x size variant combinations, edit stock/SKU/price per variant,
  * optional size chart (clothing categories only), and overall pricing.
  */
-const Step4Variants = ({ darkMode }) => {
+const Step4Variants = ({ darkMode, errors = {} }) => {
   const { draft, addVariant, updateVariant, removeVariant, setSection, addSizeChartRow, updateSizeChartRow, removeSizeChartRow } = useProductForm();
 
   const handleGenerate = (newVariants) => {
@@ -27,6 +27,7 @@ const Step4Variants = ({ darkMode }) => {
   };
 
   const showSizeChart = isClothingCategory(draft.category);
+  const errorClass = 'text-red-500 text-xs mt-2';
 
   return (
     <div className="max-w-3xl space-y-8">
@@ -39,6 +40,7 @@ const Step4Variants = ({ darkMode }) => {
           onGenerate={handleGenerate}
           darkMode={darkMode}
         />
+        {errors.variants && <p className={errorClass}>{errors.variants}</p>}
       </div>
 
       {/* Variant table */}
@@ -76,6 +78,8 @@ const Step4Variants = ({ darkMode }) => {
           onChange={(pricing) => setSection('pricing', pricing)}
           darkMode={darkMode}
         />
+        {errors.mrp && <p className={errorClass}>{errors.mrp}</p>}
+        {errors.sellingPrice && <p className={errorClass}>{errors.sellingPrice}</p>}
       </div>
     </div>
   );

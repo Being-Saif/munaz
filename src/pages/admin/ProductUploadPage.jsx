@@ -130,7 +130,8 @@ const WizardContent = () => {
     const stepErrors = validator ? validator(draft) : {};
     setErrors(stepErrors);
     if (Object.keys(stepErrors).length > 0) {
-      toast.error('Please fix the errors before continuing');
+      const firstError = Object.values(stepErrors)[0];
+      toast.error(firstError || 'Please fix the errors before continuing');
       return;
     }
     setCurrentStep((s) => Math.min(s + 1, 5));
@@ -207,7 +208,7 @@ const WizardContent = () => {
         {currentStep === 1 && <Step1AddProduct darkMode={darkMode} />}
         {currentStep === 2 && <Step2BasicDetails darkMode={darkMode} />}
         {currentStep === 3 && <Step3AdditionalDetails darkMode={darkMode} />}
-        {currentStep === 4 && <Step4Variants darkMode={darkMode} />}
+        {currentStep === 4 && <Step4Variants darkMode={darkMode} errors={errors} />}
         {currentStep === 5 && <Step5Review darkMode={darkMode} onGoToStep={goToStep} />}
       </div>
 
