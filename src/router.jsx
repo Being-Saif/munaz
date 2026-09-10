@@ -26,6 +26,7 @@ import AdminCategories from '@pages/admin/AdminCategories';
 import AdminBanners from '@pages/admin/AdminBanners';
 import AdminOrders from '@pages/admin/AdminOrders';
 import AdminCustomers from '@pages/admin/AdminCustomers';
+import ProductUploadPage from '@pages/admin/ProductUploadPage';
 import ProtectedRoute from '@components/common/ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -53,6 +54,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <AdminDashboard /> },
       { path: 'products', element: <AdminProducts /> },
+      { path: 'products/create', element: <ProductUploadPage /> },
+      { path: 'products/:id/edit', element: <ProductUploadPage /> },
       { path: 'categories', element: <AdminCategories /> },
       { path: 'banners', element: <AdminBanners /> },
       { path: 'orders', element: <AdminOrders /> },

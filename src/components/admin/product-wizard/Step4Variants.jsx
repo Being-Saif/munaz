@@ -1,0 +1,95 @@
+import { cn } from '@utils/cn';
+import { useProductForm } from '@hooks/useProductForm';
+import VariantManager from '@components/admin/VariantManager';
+import VariantTable from '@components/admin/VariantTable';
+import SizeChartEditor from '@components/admin/SizeChartEditor';
+import PricingForm from '@components/admin/PricingForm';
+
+// Categories where a size chart is relevant. Matched against category name/slug (case-insensitive).
+const CLOTHING_CATEGORY_HINTS = ['kurta', 'saree', 'co-ord', 'dress', 'palazzo', 'top', 'shirt', 'fashion', 'ethnic'];
+
+const isClothingCategory = (category) => {
+  if (!category) return false;
+  const text = `${category.name || ''} ${category.slug || ''}`.toLowerCase();
+  return CLOTHING_CATEGORY_HINTS.some((hint) => text.includes(hint));
+};
+
+/**
+ * Step 4 — Variants
+ * Generate color x size variant combinations, edit stock/SKU/price per variant,
+ * optional size chart (clothing categories only), and overall pricing.
+ */
+const Step4Variants = ({ darkMode }) => {
+  const { draft, addVariant, updateVariant, removeVariant, setSection, addSizeChartRow, updateSizeChartRow, removeSizeChartRow } = useProductForm();
+
+  const handleGenerate = (newVariants) => {
+    newVariants.forEach((v) => addVariant(v));
+  };
+
+  const showSizeChart = isClothingCategory(draft.category);
+
+  return (
+    <div className="max-w-3xl space-y-8">
+      {/* Variant creation */}
+      <div>
+        <h3 className={cn('text-sm font-semibold mb-3', darkMode ? 'text-gray-200' : 'text-gray-800')}>Create Variants</h3>
+        <VariantManager
+          productName={draft.name}
+          existingVariants={draft.variants}
+          onGenerate={handleGenerate}
+          darkMode={darkMode}
+        />
+      </div>
+
+      {/* Variant table */}
+      {draft.variants.length > 0 && (
+        <div>
+          <h3 className={cn('text-sm font-semibold mb-3', darkMode ? 'text-gray-200' : 'text-gray-800')}>Variants ({draft.variants.length})</h3>
+          <VariantTable
+            variants={draft.variants}
+            onUpdate={updateVariant}
+            onRemove={removeVariant}
+            darkMode={darkMode}
+          />
+        </div>
+      )}
+
+      {/* Size chart — clothing categories only */}
+      {showSizeChart && (
+        <div>
+          <h3 className={cn('text-sm font-semibold mb-3', darkMode ? 'text-gray-200' : 'text-gray-800')}>Size Chart</h3>
+          <SizeChartEditor
+            rows={draft.sizeChart}
+            onAddRow={addSizeChartRow}
+            onUpdateRow={updateSizeChartRow}
+            onRemoveRow={removeSizeChartRow}
+            darkMode={darkMode}
+          />
+        </div>
+      )}
+
+      {/* Pricing */}
+      <div>
+        <h3 className={cn('text-sm font-semibold mb-3', darkMode ? 'text-gray-200' : 'text-gray-800')}>Price Details</h3>
+        <PricingForm
+          pricing={draft.pricing}
+          onChange={(pricing) => setSection('pricing', pricing)}
+          darkMode={darkMode}
+        />
+      </div>
+    </div>
+  );
+};
+
+export const validateStep4 = (draft) => {
+  const errors = {};
+  if (draft.variants.length === 0) errors.variants = 'Please generate at least one variant';
+  if (!draft.pricing.mrp) errors.mrp = 'MRP is required';
+  if (!draft.pricing.sellingPrice) errors.sellingPrice = 'Selling price is required';
+  if (draft.pricing.mrp && draft.pricing.sellingPrice && Number(draft.pricing.sellingPrice) >= Number(draft.pricing.mrp)) {
+    errors.sellingPrice = 'Selling price must be less than MRP';
+  }
+  return errors;
+};
+
+export default Step4Variants;

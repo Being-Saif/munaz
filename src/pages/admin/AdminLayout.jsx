@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Package, FolderTree, Image, ShoppingCart,
-  Users, Settings, ChevronLeft, ChevronRight, Menu, X,
-  Sun, Moon, Bell, Search, LogOut, Store
+  Users, Settings, ChevronLeft, ChevronRight, ChevronDown, Menu, X,
+  Sun, Moon, Bell, Search, LogOut, Store, Plus, List
 } from 'lucide-react';
 import { cn } from '@utils/cn';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
-  { label: 'Products', icon: Package, path: '/admin/products' },
+  {
+    label: 'Products', icon: Package, path: '/admin/products',
+    children: [
+      { label: 'All Products', icon: List, path: '/admin/products' },
+      { label: 'Add Product', icon: Plus, path: '/admin/products/create' },
+    ],
+  },
   { label: 'Categories', icon: FolderTree, path: '/admin/categories' },
   { label: 'Banners', icon: Image, path: '/admin/banners' },
   { label: 'Orders', icon: ShoppingCart, path: '/admin/orders' },
@@ -21,10 +27,15 @@ const navItems = [
 const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [expanded, setExpanded] = useState(() => {
+    // Auto-expand Products if currently on a products sub-route
+    return { Products: true };
+  });
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('munaz_admin_theme') === 'dark';
   });
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     localStorage.setItem('munaz_admin_theme', darkMode ? 'dark' : 'light');
@@ -87,49 +98,109 @@ const AdminLayout = () => {
 
         {/* Navigation */}
         <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.path === '/admin'}
-              onClick={() => setMobileOpen(false)}
-              className={({ isActive }) => cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative',
-                isActive
-                  ? darkMode
-                    ? 'bg-primary/20 text-primary-light'
-                    : 'bg-primary/10 text-primary'
-                  : darkMode
-                    ? 'text-gray-400 hover:text-white hover:bg-gray-700/50'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              )}
-            >
-              {({ isActive }) => (
-                <>
-                  {isActive && (
-                    <motion.div
-                      layoutId="admin-nav-active"
-                      className={cn('absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full', darkMode ? 'bg-primary-light' : 'bg-primary')}
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                  <item.icon size={20} className="flex-shrink-0" />
-                  <AnimatePresence>
+          {navItems.map((item) => {
+            if (item.children) {
+              const isParentActive = location.pathname.startsWith(item.path);
+              const isOpen = expanded[item.label];
+              return (
+                <div key={item.path}>
+                  <button
+                    type="button"
+                    onClick={() => setExpanded((prev) => ({ ...prev, [item.label]: !prev[item.label] }))}
+                    className={cn(
+                      'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 relative',
+                      isParentActive
+                        ? darkMode ? 'bg-primary/20 text-primary-light' : 'bg-primary/10 text-primary'
+                        : darkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700/50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    )}
+                  >
+                    <item.icon size={20} className="flex-shrink-0" />
                     {!collapsed && (
-                      <motion.span
-                        initial={{ opacity: 0, width: 0 }}
-                        animate={{ opacity: 1, width: 'auto' }}
-                        exit={{ opacity: 0, width: 0 }}
-                        className="whitespace-nowrap overflow-hidden"
+                      <>
+                        <span className="whitespace-nowrap overflow-hidden flex-1 text-left">{item.label}</span>
+                        <ChevronDown size={16} className={cn('transition-transform duration-200 flex-shrink-0', isOpen && 'rotate-180')} />
+                      </>
+                    )}
+                  </button>
+
+                  {/* Sub-items */}
+                  <AnimatePresence initial={false}>
+                    {isOpen && !collapsed && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden pl-4"
                       >
-                        {item.label}
-                      </motion.span>
+                        {item.children.map((child) => (
+                          <NavLink
+                            key={child.path}
+                            to={child.path}
+                            end
+                            onClick={() => setMobileOpen(false)}
+                            className={({ isActive }) => cn(
+                              'flex items-center gap-3 px-3 py-2 mt-1 rounded-lg text-sm transition-all duration-200',
+                              isActive
+                                ? darkMode ? 'bg-primary/20 text-primary-light font-medium' : 'bg-primary/10 text-primary font-medium'
+                                : darkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700/50' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                            )}
+                          >
+                            <child.icon size={16} className="flex-shrink-0" />
+                            <span className="whitespace-nowrap">{child.label}</span>
+                          </NavLink>
+                        ))}
+                      </motion.div>
                     )}
                   </AnimatePresence>
-                </>
-              )}
-            </NavLink>
-          ))}
+                </div>
+              );
+            }
+
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                end={item.path === '/admin'}
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) => cn(
+                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group relative',
+                  isActive
+                    ? darkMode
+                      ? 'bg-primary/20 text-primary-light'
+                      : 'bg-primary/10 text-primary'
+                    : darkMode
+                      ? 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                )}
+              >
+                {({ isActive }) => (
+                  <>
+                    {isActive && (
+                      <motion.div
+                        layoutId="admin-nav-active"
+                        className={cn('absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full', darkMode ? 'bg-primary-light' : 'bg-primary')}
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                    <item.icon size={20} className="flex-shrink-0" />
+                    <AnimatePresence>
+                      {!collapsed && (
+                        <motion.span
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: 'auto' }}
+                          exit={{ opacity: 0, width: 0 }}
+                          className="whitespace-nowrap overflow-hidden"
+                        >
+                          {item.label}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </>
+                )}
+              </NavLink>
+            );
+          })}
         </nav>
 
         {/* Collapse toggle */}
