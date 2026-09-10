@@ -5,6 +5,7 @@ import { Heart, Eye, ShoppingBag, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@utils/cn';
 import { formatPrice, calculateDiscount } from '@utils/formatters';
+import { getColorHex } from '@utils/colorMap';
 import { addToCart } from '@redux/slices/cartSlice';
 import { toggleWishlist, selectIsWishlisted } from '@redux/slices/wishlistSlice';
 import { selectIsAuthenticated } from '@redux/slices/authSlice';
@@ -216,7 +217,7 @@ const ProductCard = ({ product, index = 0, isHovered, onHover, onLeave }) => {
                 <span
                   key={color.name}
                   className="w-3 h-3 rounded-full border border-border shadow-sm"
-                  style={{ backgroundColor: color.hex }}
+                  style={{ backgroundColor: color.hex || getColorHex(color.name) }}
                   title={color.name}
                 />
               ))}

@@ -11,6 +11,7 @@ import Step2BasicDetails, { validateStep2 } from '@components/admin/product-wiza
 import Step3AdditionalDetails, { validateStep3 } from '@components/admin/product-wizard/Step3AdditionalDetails';
 import Step4Variants, { validateStep4 } from '@components/admin/product-wizard/Step4Variants';
 import Step5Review from '@components/admin/product-wizard/Step5Review';
+import { getColorHex } from '@utils/colorMap';
 
 const STEP_VALIDATORS = { 1: validateStep1, 2: validateStep2, 3: validateStep3, 4: validateStep4 };
 
@@ -37,7 +38,7 @@ const buildPayload = (draft, status) => {
     gst: Number(draft.pricing.gst) || 5,
     returnsPrice: draft.pricing.returnsPrice ? Number(draft.pricing.returnsPrice) : undefined,
     isOnSale: !!(draft.pricing.sellingPrice && draft.pricing.mrp && Number(draft.pricing.sellingPrice) < Number(draft.pricing.mrp)),
-    colors: colors.map((name) => ({ name, hex: '' })),
+    colors: colors.map((name) => ({ name, hex: getColorHex(name) })),
     sizes,
     totalStock,
     variants: draft.variants.map((v) => ({

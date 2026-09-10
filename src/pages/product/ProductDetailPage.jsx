@@ -259,7 +259,7 @@ const ProductDetailPage = () => {
                         ? 'border-primary ring-2 ring-primary/30 scale-110'
                         : 'border-border hover:scale-110'
                     )}
-                    style={{ backgroundColor: color.hex }}
+                    style={{ backgroundColor: color.hex || getColorHex(color.name) }}
                     title={color.name}
                   />
                 ))}
