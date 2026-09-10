@@ -30,7 +30,7 @@ const VariantTable = ({ variants, onUpdate, onRemove, darkMode }) => {
               <th className="px-4 py-2.5 text-left font-medium">SKU</th>
               <th className="px-4 py-2.5 text-left font-medium w-28">Stock</th>
               <th className="px-4 py-2.5 text-left font-medium w-32">Price (₹)</th>
-              <th className="px-4 py-2.5 text-left font-medium w-28">Images</th>
+              <th className="px-4 py-2.5 text-left font-medium w-28">Images <span className="opacity-60">(optional)</span></th>
               <th className="px-4 py-2.5 text-right font-medium">Action</th>
             </tr>
           </thead>

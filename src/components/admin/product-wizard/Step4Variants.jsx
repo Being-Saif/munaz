@@ -1,3 +1,4 @@
+import { AlertCircle } from 'lucide-react';
 import { cn } from '@utils/cn';
 import { useProductForm } from '@hooks/useProductForm';
 import VariantManager from '@components/admin/VariantManager';
@@ -28,9 +29,23 @@ const Step4Variants = ({ darkMode, errors = {} }) => {
 
   const showSizeChart = isClothingCategory(draft.category);
   const errorClass = 'text-red-500 text-xs mt-2';
+  const errorMessages = Object.values(errors).filter(Boolean);
 
   return (
     <div className="max-w-3xl space-y-8">
+      {/* Prominent error summary — unmissable, regardless of scroll position */}
+      {errorMessages.length > 0 && (
+        <div className={cn('flex items-start gap-2.5 rounded-lg border p-4', darkMode ? 'bg-red-950/40 border-red-800' : 'bg-red-50 border-red-200')}>
+          <AlertCircle size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className={cn('text-sm font-medium', darkMode ? 'text-red-300' : 'text-red-700')}>Please fix before continuing:</p>
+            <ul className={cn('text-sm mt-1 space-y-0.5 list-disc list-inside', darkMode ? 'text-red-300' : 'text-red-600')}>
+              {errorMessages.map((msg, i) => <li key={i}>{msg}</li>)}
+            </ul>
+          </div>
+        </div>
+      )}
+
       {/* Variant creation */}
       <div>
         <h3 className={cn('text-sm font-semibold mb-3', darkMode ? 'text-gray-200' : 'text-gray-800')}>Create Variants</h3>
