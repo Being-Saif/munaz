@@ -30,7 +30,7 @@ const VariantManager = ({ productName, existingVariants, onGenerate, darkMode })
         // Don't duplicate a combination that already exists in the table
         const exists = existingVariants.some((v) => v.color === color && v.size === size);
         if (!exists) {
-          newVariants.push({ color, size, sku: makeSku(productName, color, size), stock: 0, price: '' });
+          newVariants.push({ color, size, sku: makeSku(productName, color, size), stock: 0, price: '', images: [] });
         }
       });
     });

@@ -51,6 +51,16 @@ const ProductDetailPage = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [authPrompt, setAuthPrompt] = useState({ open: false, type: 'default' });
 
+  // If the selected color has its own variant photos, show those instead of
+  // the product's shared photos. Falls back to the shared set otherwise.
+  const displayImages = useMemo(() => {
+    if (!product) return [];
+    const variantWithImages = product.variants?.find(
+      (v) => v.color === selectedColor && v.images?.length > 0
+    );
+    return variantWithImages ? variantWithImages.images : product.images;
+  }, [product, selectedColor]);
+
   const discount = product ? calculateDiscount(product.price, product.salePrice) : 0;
 
   const relatedProducts = useMemo(() => {
@@ -145,13 +155,14 @@ const ProductDetailPage = () => {
               onSwiper={setMainSwiper}
               onSlideChange={(swiper) => setActiveImage(swiper.activeIndex)}
               className="rounded-lg overflow-hidden aspect-product bg-background mb-3"
+              key={selectedColor}
             >
-              {product.images.map((img) => (
-                <SwiperSlide key={img.id}>
+              {displayImages.map((img, i) => (
+                <SwiperSlide key={img.id || img.url || i}>
                   <div className="w-full h-full group cursor-zoom-in overflow-hidden">
                     <img
                       src={img.url}
-                      alt={img.alt}
+                      alt={img.alt || product.name}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-150"
                     />
                   </div>
@@ -160,11 +171,11 @@ const ProductDetailPage = () => {
             </Swiper>
 
             {/* Thumbnails — Click to select */}
-            {product.images.length > 1 && (
+            {displayImages.length > 1 && (
               <div className="flex gap-2">
-                {product.images.map((img, index) => (
+                {displayImages.map((img, index) => (
                   <button
-                    key={img.id}
+                    key={img.id || img.url || index}
                     onClick={() => {
                       setActiveImage(index);
                       if (mainSwiper) mainSwiper.slideTo(index);

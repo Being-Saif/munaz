@@ -39,7 +39,14 @@ const buildPayload = (draft, status) => {
     colors: colors.map((name) => ({ name, hex: '' })),
     sizes,
     totalStock,
-    variants: draft.variants.map((v) => ({ color: v.color, size: v.size, sku: v.sku, stock: Number(v.stock) || 0, price: v.price ? Number(v.price) : undefined })),
+    variants: draft.variants.map((v) => ({
+      color: v.color,
+      size: v.size,
+      sku: v.sku,
+      stock: Number(v.stock) || 0,
+      price: v.price ? Number(v.price) : undefined,
+      images: (v.images || []).map((img) => ({ url: img.url, isPrimary: !!img.isPrimary })),
+    })),
     sizeChart: draft.sizeChart,
     attributes: {
       fabric: draft.basicDetails.fabric,
@@ -81,7 +88,7 @@ const productToDraft = (product) => ({
     countryOfOrigin: product.additionalDetails?.countryOfOrigin || 'India',
     manufacturer: product.additionalDetails?.manufacturer || '',
   },
-  variants: (product.variants || []).map((v) => ({ color: v.color, size: v.size, sku: v.sku, stock: v.stock, price: v.price || '' })),
+  variants: (product.variants || []).map((v) => ({ color: v.color, size: v.size, sku: v.sku, stock: v.stock, price: v.price || '', images: (v.images || []).map((img) => ({ url: img.url, isPrimary: img.isPrimary })) })),
   sizeChart: product.sizeChart || [],
   pricing: {
     mrp: product.price || '',
