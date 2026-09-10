@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import { cn } from '@utils/cn';
 import { formatPrice, calculateDiscount } from '@utils/formatters';
+import { getColorHex } from '@utils/colorMap';
 import { addToCart } from '@redux/slices/cartSlice';
 import { toggleWishlist, selectIsWishlisted } from '@redux/slices/wishlistSlice';
 import { selectIsAuthenticated } from '@redux/slices/authSlice';
