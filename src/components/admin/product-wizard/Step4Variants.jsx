@@ -37,6 +37,8 @@ const Step4Variants = ({ darkMode, errors = {} }) => {
         <VariantManager
           productName={draft.name}
           existingVariants={draft.variants}
+          initialColors={draft.basicDetails.color || []}
+          initialSizes={draft.basicDetails.size || []}
           onGenerate={handleGenerate}
           darkMode={darkMode}
         />
@@ -70,9 +72,9 @@ const Step4Variants = ({ darkMode, errors = {} }) => {
         </div>
       )}
 
-      {/* Pricing */}
-      <div>
-        <h3 className={cn('text-sm font-semibold mb-3', darkMode ? 'text-gray-200' : 'text-gray-800')}>Price Details</h3>
+      {/* ─── Divider between Variants and Pricing sections ─── */}
+      <div className={cn('border-t pt-6', darkMode ? 'border-gray-700' : 'border-gray-200')}>
+        <h3 className={cn('text-sm font-semibold mb-3', darkMode ? 'text-gray-200' : 'text-gray-800')}>Pricing & Tax Details</h3>
         <PricingForm
           pricing={draft.pricing}
           onChange={(pricing) => setSection('pricing', pricing)}

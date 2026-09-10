@@ -82,22 +82,50 @@ const Step5Review = ({ darkMode, onGoToStep }) => {
           <div><p className={rowLabel}>Brand</p><p className={rowValue}>{additionalDetails.brand || '—'}</p></div>
           <div><p className={rowLabel}>Pattern</p><p className={rowValue}>{additionalDetails.pattern || '—'}</p></div>
           <div><p className={rowLabel}>Style Code</p><p className={rowValue}>{additionalDetails.styleCode || '—'}</p></div>
+          <div><p className={rowLabel}>Net Quantity</p><p className={rowValue}>{additionalDetails.netQuantity || 1} {additionalDetails.unit || 'Piece'}</p></div>
         </div>
       </div>
 
       {/* Variants */}
       <div className={cardClass}>
-        <SectionHeader title="Variants" onEdit={() => onGoToStep(4)} darkMode={darkMode} />
+        <SectionHeader title={`Variants (${variants.length})`} onEdit={() => onGoToStep(4)} darkMode={darkMode} />
         {variants.length === 0 ? (
           <p className={cn('text-sm', darkMode ? 'text-gray-500' : 'text-gray-400')}>No variants added</p>
         ) : (
-          <div className="space-y-1.5">
-            {variants.map((v, i) => (
-              <div key={i} className="flex items-center justify-between text-sm">
-                <span className={darkMode ? 'text-gray-300' : 'text-gray-700'}>{v.color} - {v.size}</span>
-                <span className={cn('text-xs', darkMode ? 'text-gray-500' : 'text-gray-400')}>SKU: {v.sku} · Stock {v.stock}</span>
-              </div>
-            ))}
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <table className="w-full">
+              <thead>
+                <tr className={cn('text-xs uppercase', darkMode ? 'text-gray-500' : 'text-gray-400')}>
+                  <th className="px-4 sm:px-0 py-2 text-left font-medium">Photo</th>
+                  <th className="px-4 sm:px-3 py-2 text-left font-medium">Color</th>
+                  <th className="px-4 sm:px-3 py-2 text-left font-medium">Size</th>
+                  <th className="px-4 sm:px-3 py-2 text-left font-medium">Price</th>
+                  <th className="px-4 sm:px-3 py-2 text-left font-medium">Stock</th>
+                </tr>
+              </thead>
+              <tbody className={cn('divide-y', darkMode ? 'divide-gray-700' : 'divide-gray-100')}>
+                {variants.map((v, i) => {
+                  const thumb = v.images?.[0]?.url;
+                  return (
+                    <tr key={i}>
+                      <td className="px-4 sm:px-0 py-2">
+                        {thumb ? (
+                          <img src={thumb} alt="" className="w-9 h-9 rounded-md object-cover border border-gray-200" />
+                        ) : (
+                          <div className={cn('w-9 h-9 rounded-md border', darkMode ? 'border-gray-700 bg-gray-700/50' : 'border-gray-200 bg-gray-50')} />
+                        )}
+                      </td>
+                      <td className={cn('px-4 sm:px-3 py-2 text-sm', darkMode ? 'text-gray-200' : 'text-gray-800')}>{v.color}</td>
+                      <td className={cn('px-4 sm:px-3 py-2 text-sm', darkMode ? 'text-gray-200' : 'text-gray-800')}>{v.size}</td>
+                      <td className={cn('px-4 sm:px-3 py-2 text-sm', darkMode ? 'text-gray-200' : 'text-gray-800')}>
+                        {v.price ? `₹${v.price}` : <span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>—</span>}
+                      </td>
+                      <td className={cn('px-4 sm:px-3 py-2 text-sm', darkMode ? 'text-gray-200' : 'text-gray-800')}>{v.stock}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
@@ -118,6 +146,12 @@ const Step5Review = ({ darkMode, onGoToStep }) => {
             <div>
               <p className={rowLabel}>Discount</p>
               <p className="text-sm font-medium text-green-600">{discount}% off</p>
+            </div>
+          )}
+          {pricing.returnsPrice && (
+            <div>
+              <p className={rowLabel}>Returns Price</p>
+              <p className={rowValue}>₹{pricing.returnsPrice}</p>
             </div>
           )}
         </div>

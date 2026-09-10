@@ -14,7 +14,7 @@ const initialDraft = {
     fit: '',
     length: '',
     occasion: [],
-    sizes: [], // ['S', 'M', 'L', 'XL']
+    size: [], // ['S', 'M', 'L', 'XL'] — key matches DynamicAttributeRenderer's config name
   },
 
   // Step 3: Additional Details
@@ -26,6 +26,8 @@ const initialDraft = {
     careInstructions: '',
     countryOfOrigin: 'India',
     manufacturer: '',
+    netQuantity: 1,
+    unit: 'Piece',
   },
 
   // Step 4: Variants + Size Chart + Pricing
@@ -34,6 +36,7 @@ const initialDraft = {
   pricing: {
     mrp: '',
     sellingPrice: '',
+    returnsPrice: '',
     gst: '5',
   },
 };

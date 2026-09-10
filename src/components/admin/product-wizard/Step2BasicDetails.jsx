@@ -8,10 +8,10 @@ const BASIC_DETAILS_CONFIG = [
   { name: 'fabric', label: 'Fabric', type: 'dropdown', required: true, options: ['Cotton', 'Silk', 'Georgette', 'Chiffon', 'Linen', 'Rayon', 'Crepe', 'Velvet'] },
   { name: 'color', label: 'Color', type: 'multi-select', required: true, options: ['Red', 'Blue', 'Green', 'Yellow', 'Pink', 'Black', 'White', 'Gold', 'Maroon', 'Navy', 'Beige', 'Purple'] },
   { name: 'fit', label: 'Fit / Shape', type: 'dropdown', options: ['A-Line', 'Straight', 'Flared', 'Regular Fit', 'Slim Fit', 'Relaxed Fit'] },
-  { name: 'length', label: 'Length', type: 'dropdown', options: ['Knee Length', 'Ankle Length', 'Floor Length', 'Short', 'Regular'] },
+  { name: 'length', label: 'Length', type: 'dropdown', options: ['Above Knee', 'Knee Length', 'Calf Length', 'Mid-Calf', 'Ankle Length', 'Floor Length', 'Short', 'Regular'] },
   { name: 'neck', label: 'Neck', type: 'dropdown', options: ['Round Neck', 'V-Neck', 'Collar Neck', 'Boat Neck', 'High Neck', 'Sweetheart Neck'] },
   { name: 'occasion', label: 'Occasion', type: 'multi-select', options: ['Wedding', 'Party', 'Casual', 'Festive', 'Office Wear', 'Daily Wear'] },
-  { name: 'size', label: 'Size', type: 'chips', required: true, options: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
+  { name: 'size', label: 'Size', type: 'chips', required: true, options: ['XXS', 'XS', 'S', 'SM', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL', '6XL', '7XL', '8XL', '9XL', '10XL', 'Free Size'] },
 ];
 
 /**

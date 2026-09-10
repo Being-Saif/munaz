@@ -5,6 +5,7 @@ import { useProductForm } from '@hooks/useProductForm';
 
 const PATTERN_OPTIONS = ['Printed', 'Solid', 'Embroidered', 'Striped', 'Checked', 'Floral', 'Woven Design'];
 const ORNAMENTATION_OPTIONS = ['Embroidery', 'Sequins', 'Mirror Work', 'Zari Work', 'Lace', 'None'];
+const UNIT_OPTIONS = ['Piece', 'Pair', 'Set', 'Kg', 'Gram', 'Meter'];
 
 const AccordionSection = ({ title, children, defaultOpen = true, darkMode }) => {
   const [open, setOpen] = useState(defaultOpen);
@@ -81,6 +82,30 @@ const Step3AdditionalDetails = ({ darkMode }) => {
           <label className={labelClass}>Care Instructions</label>
           <textarea value={details.careInstructions} onChange={(e) => update('careInstructions', e.target.value)} rows={3} placeholder="e.g. Dry clean only, do not bleach" className={inputClass} />
         </div>
+      </AccordionSection>
+
+      <AccordionSection title="Packaging" defaultOpen={false} darkMode={darkMode}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>Net Quantity</label>
+            <input
+              type="number"
+              min="1"
+              value={details.netQuantity ?? 1}
+              onChange={(e) => update('netQuantity', Number(e.target.value))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Unit</label>
+            <select value={details.unit || 'Piece'} onChange={(e) => update('unit', e.target.value)} className={inputClass}>
+              {UNIT_OPTIONS.map((u) => <option key={u} value={u}>{u}</option>)}
+            </select>
+          </div>
+        </div>
+        <p className={cn('text-xs', darkMode ? 'text-gray-500' : 'text-gray-400')}>
+          e.g. &quot;1 Piece&quot;, &quot;2 Pieces&quot;, &quot;1 Pair&quot;, &quot;1 Set&quot;
+        </p>
       </AccordionSection>
 
       <AccordionSection title="Manufacturer Details" defaultOpen={false} darkMode={darkMode}>

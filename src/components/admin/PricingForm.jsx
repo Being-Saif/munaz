@@ -55,15 +55,33 @@ const PricingForm = ({ pricing, onChange, darkMode }) => {
         </div>
       </div>
 
-      <div>
-        <label className={labelClass}>GST %</label>
-        <select
-          value={pricing.gst}
-          onChange={(e) => onChange({ ...pricing, gst: e.target.value })}
-          className={cn(inputClass, 'pl-3.5')}
-        >
-          {GST_OPTIONS.map((g) => <option key={g} value={g}>{g}%</option>)}
-        </select>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className={labelClass}>Wrong / Defective Returns Price</label>
+          <div className="relative">
+            <span className={cn('absolute left-3 top-1/2 -translate-y-1/2 text-sm', darkMode ? 'text-gray-400' : 'text-gray-500')}>₹</span>
+            <input
+              type="number"
+              min="0"
+              value={pricing.returnsPrice}
+              onChange={(e) => onChange({ ...pricing, returnsPrice: e.target.value })}
+              placeholder="Optional"
+              className={inputClass}
+            />
+          </div>
+          <p className={cn('text-xs mt-1', darkMode ? 'text-gray-500' : 'text-gray-400')}>Amount refunded if the customer returns a wrong/defective item</p>
+        </div>
+
+        <div>
+          <label className={labelClass}>GST %</label>
+          <select
+            value={pricing.gst}
+            onChange={(e) => onChange({ ...pricing, gst: e.target.value })}
+            className={cn(inputClass, 'pl-3.5')}
+          >
+            {GST_OPTIONS.map((g) => <option key={g} value={g}>{g}%</option>)}
+          </select>
+        </div>
       </div>
     </div>
   );

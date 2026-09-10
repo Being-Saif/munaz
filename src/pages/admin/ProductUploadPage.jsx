@@ -35,6 +35,7 @@ const buildPayload = (draft, status) => {
     price: draft.pricing.mrp ? Number(draft.pricing.mrp) : undefined,
     salePrice: draft.pricing.sellingPrice ? Number(draft.pricing.sellingPrice) : undefined,
     gst: Number(draft.pricing.gst) || 5,
+    returnsPrice: draft.pricing.returnsPrice ? Number(draft.pricing.returnsPrice) : undefined,
     isOnSale: !!(draft.pricing.sellingPrice && draft.pricing.mrp && Number(draft.pricing.sellingPrice) < Number(draft.pricing.mrp)),
     colors: colors.map((name) => ({ name, hex: '' })),
     sizes,
@@ -87,12 +88,15 @@ const productToDraft = (product) => ({
     careInstructions: product.additionalDetails?.careInstructions || '',
     countryOfOrigin: product.additionalDetails?.countryOfOrigin || 'India',
     manufacturer: product.additionalDetails?.manufacturer || '',
+    netQuantity: product.additionalDetails?.netQuantity ?? 1,
+    unit: product.additionalDetails?.unit || 'Piece',
   },
   variants: (product.variants || []).map((v) => ({ color: v.color, size: v.size, sku: v.sku, stock: v.stock, price: v.price || '', images: (v.images || []).map((img) => ({ url: img.url, isPrimary: img.isPrimary })) })),
   sizeChart: product.sizeChart || [],
   pricing: {
     mrp: product.price || '',
     sellingPrice: product.salePrice || '',
+    returnsPrice: product.returnsPrice || '',
     gst: String(product.gst ?? 5),
   },
 });

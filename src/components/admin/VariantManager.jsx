@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@utils/cn';
 
 const COLOR_OPTIONS = ['Red', 'Blue', 'Green', 'Yellow', 'Pink', 'Black', 'White', 'Gold', 'Maroon', 'Navy', 'Beige', 'Purple'];
-const SIZE_OPTIONS = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const SIZE_OPTIONS = ['XXS', 'XS', 'S', 'SM', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL', '6XL', '7XL', '8XL', '9XL', '10XL', 'Free Size'];
 
 const makeSku = (name, color, size) => {
   const base = (name || 'PRD').replace(/\s+/g, '').slice(0, 4).toUpperCase();
@@ -10,12 +10,25 @@ const makeSku = (name, color, size) => {
 };
 
 /**
- * VariantManager - pick colors + sizes, then generate the cross-product of
- * color x size combinations into the variants table.
+ * VariantManager - color/size picker for generating variant combinations.
+ *
+ * Pre-populated from the colors/sizes already chosen in Step 2 (Basic Details)
+ * so the admin isn't asked to select the same thing twice. They can still
+ * add/remove selections here if a specific variant combination doesn't apply.
  */
-const VariantManager = ({ productName, existingVariants, onGenerate, darkMode }) => {
-  const [colors, setColors] = useState([]);
-  const [sizes, setSizes] = useState([]);
+const VariantManager = ({ productName, existingVariants, initialColors = [], initialSizes = [], onGenerate, darkMode }) => {
+  const [colors, setColors] = useState(initialColors);
+  const [sizes, setSizes] = useState(initialSizes);
+
+  // If Step 2's selections change (e.g. admin goes back and edits them),
+  // keep this in sync as long as the admin hasn't already generated variants.
+  useEffect(() => {
+    if (existingVariants.length === 0) {
+      setColors(initialColors);
+      setSizes(initialSizes);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialColors.join(','), initialSizes.join(',')]);
 
   const toggle = (list, setList, value) => {
     setList(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
@@ -46,6 +59,12 @@ const VariantManager = ({ productName, existingVariants, onGenerate, darkMode })
 
   return (
     <div className={cn('rounded-lg border p-4 space-y-4', darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-gray-50')}>
+      {(initialColors.length > 0 || initialSizes.length > 0) && (
+        <p className={cn('text-xs', darkMode ? 'text-gray-400' : 'text-gray-500')}>
+          Pre-filled from the colors/sizes you picked in Basic Details — adjust below if needed.
+        </p>
+      )}
+
       <div>
         <p className={cn('text-sm font-medium mb-2', darkMode ? 'text-gray-300' : 'text-gray-700')}>Color</p>
         <div className="flex flex-wrap gap-2">
