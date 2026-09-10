@@ -55,8 +55,9 @@ const VariantTable = ({ variants, onUpdate, onRemove, darkMode }) => {
                       <input
                         type="number"
                         min="0"
-                        value={variant.stock}
-                        onChange={(e) => onUpdate(index, { stock: Number(e.target.value) })}
+                        value={variant.stock === 0 ? '' : variant.stock}
+                        onChange={(e) => onUpdate(index, { stock: e.target.value === '' ? 0 : Number(e.target.value) })}
+                        placeholder="0"
                         className={cellInput}
                       />
                     </td>
