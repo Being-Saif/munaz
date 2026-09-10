@@ -27,6 +27,7 @@ import AdminCategories from '@pages/admin/AdminCategories';
 import AdminBanners from '@pages/admin/AdminBanners';
 import AdminOrders from '@pages/admin/AdminOrders';
 import AdminCustomers from '@pages/admin/AdminCustomers';
+import AdminSettings from '@pages/admin/AdminSettings';
 import ProductUploadPage from '@pages/admin/ProductUploadPage';
 import ProtectedRoute from '@components/common/ProtectedRoute';
 
@@ -62,6 +63,7 @@ const router = createBrowserRouter([
       { path: 'banners', element: <AdminBanners /> },
       { path: 'orders', element: <AdminOrders /> },
       { path: 'customers', element: <AdminCustomers /> },
+      { path: 'settings', element: <AdminSettings /> },
     ],
   },
 
