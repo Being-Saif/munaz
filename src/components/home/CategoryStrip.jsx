@@ -35,7 +35,7 @@ const CategoryStrip = () => {
               transition={{ delay: index * 0.08, duration: 0.5 }}
             >
               <Link
-                to={`/shop?category=${category.slug}`}
+                to={`/shop?category=${encodeURIComponent(category.slug)}`}
                 className="group block relative overflow-hidden rounded-lg aspect-[3/4]"
               >
                 <img

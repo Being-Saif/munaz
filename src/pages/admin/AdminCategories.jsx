@@ -147,7 +147,15 @@ const CategoryForm = ({ darkMode, category, onSave, onClose }) => {
     setUploading(false);
   };
 
-  const handleSubmit = (e) => { e.preventDefault(); onSave({ ...form, slug: form.slug || form.name.toLowerCase().replace(/\s+/g, '-'), order: Number(form.order) }); };
+  const slugify = (str = '') =>
+    str.toLowerCase().trim()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+
+  const handleSubmit = (e) => { e.preventDefault(); onSave({ ...form, slug: form.slug || slugify(form.name), order: Number(form.order) }); };
 
   return (
     <form onSubmit={handleSubmit} className="p-5 space-y-4">

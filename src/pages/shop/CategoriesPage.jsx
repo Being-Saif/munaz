@@ -59,7 +59,7 @@ const CategoriesPage = () => {
                 transition={{ delay: index * 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                 <Link
-                  to={`/shop?category=${category.slug}`}
+                  to={`/shop?category=${encodeURIComponent(category.slug)}`}
                   className="group block bg-surface rounded-xl border border-border overflow-hidden shadow-card hover:shadow-xl transition-all duration-400 ease-velora hover:-translate-y-1"
                 >
                   {/* Category Image */}

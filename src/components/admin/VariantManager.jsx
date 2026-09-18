@@ -17,11 +17,14 @@ const makeSku = (name, color, size) => {
  * add/remove selections here if a specific variant combination doesn't apply.
  */
 const VariantManager = ({ productName, existingVariants, initialColors = [], initialSizes = [], onGenerate, darkMode }) => {
-  const [colors, setColors] = useState(initialColors);
-  const [sizes, setSizes] = useState(initialSizes);
+  const [colors, setColors] = useState([]);
+  const [sizes, setSizes] = useState([]);
 
-  // If Step 2's selections change (e.g. admin goes back and edits them),
-  // keep this in sync as long as the admin hasn't already generated variants.
+  // Sync from Step 2's selections whenever they're available (including on
+  // first mount) — as long as the admin hasn't already generated variants.
+  // Using an effect instead of useState's initializer avoids a timing bug
+  // where initialColors/initialSizes could be empty on the very first render
+  // and never get picked up afterward.
   useEffect(() => {
     if (existingVariants.length === 0) {
       setColors(initialColors);

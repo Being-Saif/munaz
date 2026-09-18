@@ -173,7 +173,8 @@ const WizardContent = () => {
   const submitProduct = async () => {
     const step4Errors = validateStep4(draft);
     if (Object.keys(step4Errors).length > 0) {
-      toast.error('Please complete pricing and variants before submitting');
+      const firstError = Object.values(step4Errors)[0];
+      toast.error(firstError || 'Please complete pricing and variants before submitting');
       setCurrentStep(4);
       return;
     }

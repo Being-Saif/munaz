@@ -134,7 +134,7 @@ const ProductDetailPage = () => {
           <ChevronRight size={14} />
           <Link to="/shop" className="hover:text-primary transition-colors">Shop</Link>
           <ChevronRight size={14} />
-          <Link to={`/shop?category=${typeof product.category === 'object' ? product.category?.slug : product.category}`} className="hover:text-primary transition-colors capitalize">
+          <Link to={`/shop?category=${encodeURIComponent(typeof product.category === 'object' ? product.category?.slug : product.category)}`} className="hover:text-primary transition-colors capitalize">
             {typeof product.category === 'object' ? product.category?.name : product.category}
           </Link>
           <ChevronRight size={14} />
