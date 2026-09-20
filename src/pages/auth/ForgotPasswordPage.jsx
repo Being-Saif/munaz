@@ -1,53 +1,31 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
+import { Mail, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { cn } from '@utils/cn';
 import api from '@services/api';
 
-/**
- * Password reset.
- *
- * NOTE: This performs a direct reset (email + new password) via the
- * /auth/set-password endpoint, because the project has no email/SMTP service
- * configured to send a reset link. Once an email provider is set up, this can
- * be upgraded to a proper tokenized email-link flow.
- */
 const ForgotPasswordPage = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isDone, setIsDone] = useState(false);
+  const [isSent, setIsSent] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setError('Please enter a valid email');
-      return;
-    }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
-    if (password !== confirm) {
-      setError('Passwords do not match');
       return;
     }
 
     setIsLoading(true);
     try {
-      await api.post('/auth/set-password', { email: email.trim().toLowerCase(), password });
-      setIsDone(true);
-      toast.success('Password reset! You can now sign in.');
-      setTimeout(() => navigate('/login'), 1800);
+      await api.post('/auth/forgot-password', { email: email.trim().toLowerCase() });
+      setIsSent(true);
+      toast.success('Reset link sent — check your email!');
     } catch (err) {
-      setError(err.message || 'Could not reset password. Check the email and try again.');
+      setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +34,7 @@ const ForgotPasswordPage = () => {
   return (
     <div>
       <AnimatePresence mode="wait">
-        {!isDone ? (
+        {!isSent ? (
           <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -20 }}>
             <Link
               to="/login"
@@ -67,9 +45,9 @@ const ForgotPasswordPage = () => {
             </Link>
 
             <div className="mb-8">
-              <h2 className="font-heading text-2xl sm:text-3xl text-dark mb-2">Reset Password</h2>
+              <h2 className="font-heading text-2xl sm:text-3xl text-dark mb-2">Forgot Password?</h2>
               <p className="text-text-secondary text-sm leading-relaxed">
-                Enter your account email and choose a new password.
+                Enter the email associated with your account and we'll send you a link to reset your password.
               </p>
             </div>
 
@@ -86,41 +64,12 @@ const ForgotPasswordPage = () => {
                     className="input-base pl-11"
                   />
                 </div>
+                {error && (
+                  <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-error text-xs mt-1.5">
+                    {error}
+                  </motion.p>
+                )}
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-dark mb-1.5">New Password</label>
-                <div className="relative">
-                  <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => { setPassword(e.target.value); setError(''); }}
-                    placeholder="At least 6 characters"
-                    className="input-base pl-11"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-dark mb-1.5">Confirm New Password</label>
-                <div className="relative">
-                  <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
-                  <input
-                    type="password"
-                    value={confirm}
-                    onChange={(e) => { setConfirm(e.target.value); setError(''); }}
-                    placeholder="Re-enter new password"
-                    className="input-base pl-11"
-                  />
-                </div>
-              </div>
-
-              {error && (
-                <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-error text-xs">
-                  {error}
-                </motion.p>
-              )}
 
               <button
                 type="submit"
@@ -130,7 +79,7 @@ const ForgotPasswordPage = () => {
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
-                  <>Reset Password <ArrowRight size={16} /></>
+                  <>Send Reset Link <ArrowRight size={16} /></>
                 )}
               </button>
             </form>
@@ -156,9 +105,12 @@ const ForgotPasswordPage = () => {
             >
               <CheckCircle size={32} className="text-success" />
             </motion.div>
-            <h2 className="font-heading text-2xl text-dark mb-2">Password Reset</h2>
-            <p className="text-text-secondary text-sm leading-relaxed mb-8">
-              Your password has been updated. Redirecting you to sign in…
+            <h2 className="font-heading text-2xl text-dark mb-2">Check Your Email</h2>
+            <p className="text-text-secondary text-sm leading-relaxed mb-2">We've sent a password reset link to:</p>
+            <p className="text-dark font-medium text-sm mb-6">{email}</p>
+            <p className="text-text-muted text-xs mb-8">
+              Didn't receive it? Check your spam folder or{' '}
+              <button onClick={() => { setIsSent(false); }} className="text-primary hover:underline">try again</button>
             </p>
             <Link to="/login" className="btn-primary inline-flex items-center gap-2 px-6 py-3">
               <ArrowLeft size={16} /> Back to Sign In
