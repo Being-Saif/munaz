@@ -339,7 +339,7 @@ const ProductDetailPage = () => {
             <div className="grid grid-cols-3 gap-3 py-4 border-t border-border">
               {[
                 { icon: Truck, label: 'Free Shipping', sub: 'On orders over ₹500' },
-                { icon: RotateCcw, label: 'Easy Returns', sub: '30 days return policy' },
+                { icon: RotateCcw, label: 'Easy Returns', sub: '7 days return policy' },
                 { icon: ShieldCheck, label: 'Secure Checkout', sub: '100% secure payment' },
               ].map(({ icon: Icon, label, sub }) => (
                 <div key={label} className="text-center">
