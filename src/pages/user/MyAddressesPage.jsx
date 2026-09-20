@@ -2,51 +2,52 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Plus, MapPin, Edit2, Trash2, X } from 'lucide-react';
-import { useSelector } from 'react-redux';
-import { selectCurrentUser } from '@redux/slices/authSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectCurrentUser, updateUser } from '@redux/slices/authSlice';
 import api from '@services/api';
 import toast from 'react-hot-toast';
 
 const MyAddressesPage = () => {
   const user = useSelector(selectCurrentUser);
+  const dispatch = useDispatch();
   const [addresses, setAddresses] = useState(user?.addresses || []);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [showDelete, setShowDelete] = useState(null);
 
+  // Keep the local list and the Redux user in sync after any change.
+  const applyAddresses = (list) => {
+    setAddresses(list);
+    dispatch(updateUser({ addresses: list }));
+  };
+
   const handleSave = async (formData) => {
     try {
       if (editing) {
         const res = await api.put(`/users/addresses/${editing._id}`, formData);
-        setAddresses(res.data);
+        applyAddresses(res.data);
         toast.success('Address updated');
       } else {
         const res = await api.post('/users/addresses', formData);
-        setAddresses(res.data);
+        applyAddresses(res.data);
         toast.success('Address added');
       }
+      setShowForm(false);
+      setEditing(null);
     } catch (err) {
-      // Fallback for demo
-      if (editing) {
-        setAddresses(prev => prev.map(a => a._id === editing._id ? { ...a, ...formData } : a));
-      } else {
-        setAddresses(prev => [...prev, { ...formData, _id: `addr_${Date.now()}` }]);
-      }
-      toast.success(editing ? 'Address updated' : 'Address added');
+      toast.error(err.message || 'Could not save address. Please try again.');
     }
-    setShowForm(false);
-    setEditing(null);
   };
 
   const handleDelete = async (id) => {
     try {
       const res = await api.delete(`/users/addresses/${id}`);
-      setAddresses(res.data);
-    } catch {
-      setAddresses(prev => prev.filter(a => a._id !== id));
+      applyAddresses(res.data);
+      toast.success('Address deleted');
+      setShowDelete(null);
+    } catch (err) {
+      toast.error(err.message || 'Could not delete address.');
     }
-    setShowDelete(null);
-    toast.success('Address deleted');
   };
 
   return (

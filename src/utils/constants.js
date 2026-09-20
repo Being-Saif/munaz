@@ -64,14 +64,14 @@ export const FOOTER_LINKS = {
     { label: 'Orders', href: '/account/orders' },
     { label: 'Wishlist', href: '/wishlist' },
     { label: 'Addresses', href: '/account/addresses' },
-    { label: 'Logout', href: '/logout' },
+    { label: 'Logout', action: 'logout' },
   ],
 };
 
 // Trust badges
 export const TRUST_BADGES = [
   { icon: 'Truck', title: 'Free Shipping', subtitle: 'On orders over ₹500' },
-  { icon: 'RotateCcw', title: 'Easy Returns', subtitle: '30 days return policy' },
+  { icon: 'RotateCcw', title: 'Easy Returns', subtitle: '7 days return policy' },
   { icon: 'ShieldCheck', title: 'Secure Payment', subtitle: '100% secure payment' },
   { icon: 'Headphones', title: '24/7 Support', subtitle: 'Dedicated support' },
 ];

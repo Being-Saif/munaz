@@ -20,12 +20,22 @@ const STEP_VALIDATORS = { 1: validateStep1, 2: validateStep2, 3: validateStep3, 
  */
 const buildPayload = (draft, status) => {
   const primaryImage = draft.images.find((img) => img.isPrimary) || draft.images[0];
+  const hasVariants = draft.variants.length > 0;
+
   const totalStock = draft.variants.reduce((sum, v) => sum + (Number(v.stock) || 0), 0);
-  const colors = [...new Set(draft.variants.map((v) => v.color))];
-  const sizes = [...new Set(draft.variants.map((v) => v.size))].map((size) => ({
-    name: size,
-    stock: draft.variants.filter((v) => v.size === size).reduce((sum, v) => sum + (Number(v.stock) || 0), 0),
-  }));
+
+  // Colors/sizes: derive from variants when present, otherwise fall back to the
+  // colors/sizes picked in Step 2 (Basic Details) so a variant-less product
+  // still shows its available colors/sizes on the storefront.
+  const colors = hasVariants
+    ? [...new Set(draft.variants.map((v) => v.color))]
+    : (draft.basicDetails.color || []);
+  const sizes = hasVariants
+    ? [...new Set(draft.variants.map((v) => v.size))].map((size) => ({
+        name: size,
+        stock: draft.variants.filter((v) => v.size === size).reduce((sum, v) => sum + (Number(v.stock) || 0), 0),
+      }))
+    : (draft.basicDetails.size || []).map((name) => ({ name, stock: 0 }));
 
   return {
     name: draft.name,
@@ -55,7 +65,13 @@ const buildPayload = (draft, status) => {
       fit: draft.basicDetails.fit,
       length: draft.basicDetails.length,
       neck: draft.basicDetails.neck,
+      sleeve: draft.basicDetails.sleeve,
       occasion: draft.basicDetails.occasion,
+      bottomType: draft.basicDetails.bottomType,
+      bottomColor: draft.basicDetails.bottomColor,
+      bottomFabric: draft.basicDetails.bottomFabric,
+      dupattaColor: draft.basicDetails.dupattaColor,
+      dupattaFabric: draft.basicDetails.dupattaFabric,
     },
     additionalDetails: draft.additionalDetails,
     brand: draft.additionalDetails.brand || undefined,
@@ -78,8 +94,14 @@ const productToDraft = (product) => ({
     fit: product.attributes?.fit || '',
     length: product.attributes?.length || '',
     neck: product.attributes?.neck || '',
+    sleeve: product.attributes?.sleeve || '',
     occasion: product.attributes?.occasion || [],
-    sizes: (product.sizes || []).map((s) => s.name),
+    size: (product.sizes || []).map((s) => s.name),
+    bottomType: product.attributes?.bottomType || '',
+    bottomColor: product.attributes?.bottomColor || '',
+    bottomFabric: product.attributes?.bottomFabric || '',
+    dupattaColor: product.attributes?.dupattaColor || '',
+    dupattaFabric: product.attributes?.dupattaFabric || '',
   },
   additionalDetails: {
     brand: product.brand || '',

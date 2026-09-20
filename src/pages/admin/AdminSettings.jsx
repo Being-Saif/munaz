@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Save, Store } from 'lucide-react';
+import { Save, Store, Truck, RotateCcw } from 'lucide-react';
 import { cn } from '@utils/cn';
 import api from '@services/api';
 import toast from 'react-hot-toast';
 
 const AdminSettings = () => {
   const { darkMode } = useOutletContext();
-  const [form, setForm] = useState({ storeName: '', supportEmail: '', supportPhone: '', address: '' });
+  const [form, setForm] = useState({
+    storeName: '', supportEmail: '', supportPhone: '', address: '',
+    contactEmail: '', shippingFee: 10, freeShippingThreshold: 500,
+    returnWindowDays: 7, returnAddress: '',
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -19,6 +23,11 @@ const AdminSettings = () => {
         supportEmail: res.data.supportEmail || '',
         supportPhone: res.data.supportPhone || '',
         address: res.data.address || '',
+        contactEmail: res.data.contactEmail || '',
+        shippingFee: res.data.shippingFee ?? 10,
+        freeShippingThreshold: res.data.freeShippingThreshold ?? 500,
+        returnWindowDays: res.data.returnWindowDays ?? 7,
+        returnAddress: res.data.returnAddress || '',
       }))
       .catch(() => toast.error('Failed to load settings'))
       .finally(() => setLoading(false));
@@ -87,6 +96,16 @@ const AdminSettings = () => {
               />
             </div>
             <div>
+              <label className={labelClass}>Contact Email (shown to customers)</label>
+              <input
+                type="email"
+                value={form.contactEmail}
+                onChange={(e) => setForm({ ...form, contactEmail: e.target.value })}
+                placeholder="hello@munazshop.com"
+                className={inputClass}
+              />
+            </div>
+            <div>
               <label className={labelClass}>Support Phone</label>
               <input
                 value={form.supportPhone}
@@ -104,6 +123,70 @@ const AdminSettings = () => {
                 placeholder="Full store/business address"
                 className={inputClass}
               />
+            </div>
+
+            {/* Shipping */}
+            <div className={cn('pt-4 mt-2 border-t', darkMode ? 'border-gray-700' : 'border-gray-200')}>
+              <div className="flex items-center gap-2 mb-3">
+                <Truck size={16} className="text-primary" />
+                <h3 className={cn('text-sm font-semibold', darkMode ? 'text-white' : 'text-gray-900')}>Shipping</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>Shipping Fee (₹)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={form.shippingFee}
+                    onChange={(e) => setForm({ ...form, shippingFee: e.target.value })}
+                    placeholder="10"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Free Shipping Above (₹)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={form.freeShippingThreshold}
+                    onChange={(e) => setForm({ ...form, freeShippingThreshold: e.target.value })}
+                    placeholder="500"
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+              <p className={cn('text-xs mt-2', darkMode ? 'text-gray-400' : 'text-gray-500')}>
+                Orders at or above the free-shipping amount ship free; otherwise the flat shipping fee applies.
+              </p>
+            </div>
+
+            {/* Returns */}
+            <div className={cn('pt-4 mt-2 border-t', darkMode ? 'border-gray-700' : 'border-gray-200')}>
+              <div className="flex items-center gap-2 mb-3">
+                <RotateCcw size={16} className="text-primary" />
+                <h3 className={cn('text-sm font-semibold', darkMode ? 'text-white' : 'text-gray-900')}>Returns</h3>
+              </div>
+              <div>
+                <label className={labelClass}>Return Window (days)</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={form.returnWindowDays}
+                  onChange={(e) => setForm({ ...form, returnWindowDays: e.target.value })}
+                  placeholder="7"
+                  className={inputClass}
+                />
+              </div>
+              <div className="mt-4">
+                <label className={labelClass}>Return Address</label>
+                <textarea
+                  value={form.returnAddress}
+                  onChange={(e) => setForm({ ...form, returnAddress: e.target.value })}
+                  rows={2}
+                  placeholder="Address customers ship returns to"
+                  className={inputClass}
+                />
+              </div>
             </div>
 
             <button

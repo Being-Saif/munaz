@@ -13,8 +13,16 @@ const initialDraft = {
     color: [],
     fit: '',
     length: '',
+    neck: '',
+    sleeve: '',
     occasion: [],
     size: [], // ['S', 'M', 'L', 'XL'] — key matches DynamicAttributeRenderer's config name
+    // Bottom & Dupatta details (for sets / co-ords) — all optional
+    bottomType: '',
+    bottomColor: '',
+    bottomFabric: '',
+    dupattaColor: '',
+    dupattaFabric: '',
   },
 
   // Step 3: Additional Details

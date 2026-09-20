@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Truck, CreditCard, CheckCircle, ArrowRight, ArrowLeft, Package } from 'lucide-react';
-import { selectCartItems, selectCartSubtotal, selectCartTotal, clearCart } from '@redux/slices/cartSlice';
+import { selectCartItems, selectCartSubtotal, clearCart } from '@redux/slices/cartSlice';
 import { selectCurrentUser } from '@redux/slices/authSlice';
 import { formatPrice } from '@utils/formatters';
 import { cn } from '@utils/cn';
 import useRazorpay from '@hooks/useRazorpay';
 import orderService from '@services/orderService';
+import api from '@services/api';
 import toast from 'react-hot-toast';
 
 const steps = [
@@ -29,15 +30,30 @@ const CheckoutPage = () => {
   });
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [shipSettings, setShipSettings] = useState({ shippingFee: 10, freeShippingThreshold: 500 });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { initiatePayment } = useRazorpay();
   const items = useSelector(selectCartItems);
   const subtotal = useSelector(selectCartSubtotal);
-  const total = useSelector(selectCartTotal);
   const user = useSelector(selectCurrentUser);
-  const shipping = useSelector((state) => state.cart.shipping);
+
+  // Pull the admin-configured shipping fee / free-shipping threshold.
+  useEffect(() => {
+    api.get('/settings/public')
+      .then((res) => setShipSettings({
+        shippingFee: res.data?.shippingFee ?? 10,
+        freeShippingThreshold: res.data?.freeShippingThreshold ?? 500,
+      }))
+      .catch(() => { /* fall back to defaults */ });
+  }, []);
+
+  // Standard shipping: free once subtotal reaches the threshold, else the flat fee.
+  const standardShipping = subtotal >= shipSettings.freeShippingThreshold ? 0 : shipSettings.shippingFee;
+  const expressSurcharge = 99;
+  const shippingCost = shippingMethod === 'express' ? standardShipping + expressSurcharge : standardShipping;
+  const total = subtotal + shippingCost;
 
   if (!user) {
     navigate('/login');
@@ -62,7 +78,6 @@ const CheckoutPage = () => {
   const prevStep = () => setCurrentStep((s) => Math.max(s - 1, 1));
 
   const buildOrderPayload = (paymentStatus) => {
-    const shippingCost = shippingMethod === 'express' ? 99 : 0;
     return {
       items: items.map((it) => ({
         product: it.productId,
@@ -103,8 +118,7 @@ const CheckoutPage = () => {
   };
 
   const placeOrder = async () => {
-    const shippingCost = shippingMethod === 'express' ? 99 : 0;
-    const finalTotal = subtotal + shippingCost;
+    const finalTotal = total;
 
     if (paymentMethod === 'cod') {
       // Cash on Delivery — save order directly
@@ -289,8 +303,8 @@ const CheckoutPage = () => {
                     <h2 className="font-heading text-lg text-dark mb-5">Shipping Method</h2>
                     <div className="space-y-3">
                       {[
-                        { id: 'standard', label: 'Standard Delivery', time: '5-7 business days', price: 'Free (orders above ₹500)' },
-                        { id: 'express', label: 'Express Delivery', time: '2-3 business days', price: '₹99' },
+                        { id: 'standard', label: 'Standard Delivery', time: '5-7 business days', price: standardShipping === 0 ? `Free (orders above ₹${shipSettings.freeShippingThreshold})` : formatPrice(standardShipping) },
+                        { id: 'express', label: 'Express Delivery', time: '2-3 business days', price: `+₹${expressSurcharge}` },
                       ].map((method) => (
                         <label
                           key={method.id}
@@ -436,17 +450,17 @@ const CheckoutPage = () => {
                 </div>
                 <div className="flex justify-between text-text-secondary">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? <span className="text-success">Free</span> : formatPrice(shipping)}</span>
+                  <span>{standardShipping === 0 ? <span className="text-success">Free</span> : formatPrice(standardShipping)}</span>
                 </div>
                 {shippingMethod === 'express' && (
                   <div className="flex justify-between text-text-secondary">
                     <span>Express Fee</span>
-                    <span>₹99</span>
+                    <span>{formatPrice(expressSurcharge)}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-dark text-base pt-2 border-t border-border">
                   <span>Total</span>
-                  <span>{formatPrice(total + (shippingMethod === 'express' ? 99 : 0))}</span>
+                  <span>{formatPrice(total)}</span>
                 </div>
               </div>
 

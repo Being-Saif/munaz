@@ -1,8 +1,32 @@
-import { Link } from 'react-router-dom';
-import { Globe, MessageCircle, Camera, MapPin } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Globe, MessageCircle, Camera, MapPin, Mail, Phone } from 'lucide-react';
 import { APP_NAME, APP_TAGLINE, FOOTER_LINKS } from '@utils/constants';
+import { logout } from '@redux/slices/authSlice';
+import api from '@services/api';
+import toast from 'react-hot-toast';
 
 const Footer = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    api.get('/settings/public')
+      .then((res) => setSettings(res.data))
+      .catch(() => { /* footer still renders without dynamic contact info */ });
+  }, []);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    toast.success('Logged out');
+    navigate('/');
+  };
+
+  const contactEmail = settings?.contactEmail;
+  const contactPhone = settings?.supportPhone;
+
   return (
     <footer className="bg-dark text-white">
       {/* Main Footer */}
@@ -16,6 +40,23 @@ const Footer = () => {
             <p className="text-white/60 text-sm leading-relaxed mb-4">
               Your destination for premium quality fashion and timeless style. {APP_TAGLINE}.
             </p>
+
+            {/* Contact info */}
+            {(contactEmail || contactPhone) && (
+              <div className="space-y-2 mb-4">
+                {contactEmail && (
+                  <a href={`mailto:${contactEmail}`} className="flex items-center gap-2 text-white/70 text-sm hover:text-white transition-colors">
+                    <Mail size={15} /> {contactEmail}
+                  </a>
+                )}
+                {contactPhone && (
+                  <a href={`tel:${contactPhone}`} className="flex items-center gap-2 text-white/70 text-sm hover:text-white transition-colors">
+                    <Phone size={15} /> {contactPhone}
+                  </a>
+                )}
+              </div>
+            )}
+
             {/* Social Icons */}
             <div className="flex items-center gap-3">
               {[Globe, MessageCircle, Camera, MapPin].map((Icon, index) => (
@@ -76,13 +117,22 @@ const Footer = () => {
             </h3>
             <ul className="space-y-2.5">
               {FOOTER_LINKS.account.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    to={link.href}
-                    className="text-white/60 text-sm hover:text-white transition-colors duration-300"
-                  >
-                    {link.label}
-                  </Link>
+                <li key={link.label}>
+                  {link.action === 'logout' ? (
+                    <button
+                      onClick={handleLogout}
+                      className="text-white/60 text-sm hover:text-white transition-colors duration-300"
+                    >
+                      {link.label}
+                    </button>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-white/60 text-sm hover:text-white transition-colors duration-300"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

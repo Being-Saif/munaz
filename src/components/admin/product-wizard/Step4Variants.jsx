@@ -48,7 +48,12 @@ const Step4Variants = ({ darkMode, errors = {} }) => {
 
       {/* Variant creation */}
       <div>
-        <h3 className={cn('text-sm font-semibold mb-3', darkMode ? 'text-gray-200' : 'text-gray-800')}>Create Variants</h3>
+        <h3 className={cn('text-sm font-semibold mb-1', darkMode ? 'text-gray-200' : 'text-gray-800')}>
+          Create Variants <span className={cn('font-normal', darkMode ? 'text-gray-400' : 'text-gray-500')}>(optional)</span>
+        </h3>
+        <p className={cn('text-xs mb-3', darkMode ? 'text-gray-400' : 'text-gray-500')}>
+          Only add variants if this product comes in multiple colors/sizes. You can skip this and just set pricing below.
+        </p>
         <VariantManager
           productName={draft.name}
           existingVariants={draft.variants}
@@ -104,7 +109,7 @@ const Step4Variants = ({ darkMode, errors = {} }) => {
 
 export const validateStep4 = (draft) => {
   const errors = {};
-  if (draft.variants.length === 0) errors.variants = 'Please generate at least one variant';
+  // Variants are optional — a product can be sold without color/size combinations.
   if (!draft.pricing.mrp) errors.mrp = 'MRP is required';
   if (!draft.pricing.sellingPrice) errors.sellingPrice = 'Selling price is required';
   if (draft.pricing.mrp && draft.pricing.sellingPrice && Number(draft.pricing.sellingPrice) >= Number(draft.pricing.mrp)) {
