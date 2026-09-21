@@ -1,3 +1,4 @@
+import { cn } from '@utils/cn';
 import { useProductForm } from '@hooks/useProductForm';
 import DynamicAttributeRenderer from '@components/admin/DynamicAttributeRenderer';
 
