@@ -22,7 +22,12 @@ const buildPayload = (draft, status) => {
   const primaryImage = draft.images.find((img) => img.isPrimary) || draft.images[0];
   const hasVariants = draft.variants.length > 0;
 
-  const totalStock = draft.variants.reduce((sum, v) => sum + (Number(v.stock) || 0), 0);
+  // Default stock for a variant-less product's sizes. Since there's no
+  // per-size stock input without variants, the sizes chosen in Step 2 are
+  // treated as available (so they don't show as struck-out/out-of-stock).
+  const DEFAULT_SIZE_STOCK = 99;
+
+  const variantStock = draft.variants.reduce((sum, v) => sum + (Number(v.stock) || 0), 0);
 
   // Colors/sizes: derive from variants when present, otherwise fall back to the
   // colors/sizes picked in Step 2 (Basic Details) so a variant-less product
@@ -35,7 +40,11 @@ const buildPayload = (draft, status) => {
         name: size,
         stock: draft.variants.filter((v) => v.size === size).reduce((sum, v) => sum + (Number(v.stock) || 0), 0),
       }))
-    : (draft.basicDetails.size || []).map((name) => ({ name, stock: 0 }));
+    : (draft.basicDetails.size || []).map((name) => ({ name, stock: DEFAULT_SIZE_STOCK }));
+
+  const totalStock = hasVariants
+    ? variantStock
+    : (draft.basicDetails.size || []).length * DEFAULT_SIZE_STOCK || DEFAULT_SIZE_STOCK;
 
   return {
     name: draft.name,
