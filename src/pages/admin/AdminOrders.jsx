@@ -1,9 +1,10 @@
 import { useState, useEffect, Fragment } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, ShoppingCart, ChevronDown, MapPin, Phone, Mail } from 'lucide-react';
+import { Search, ShoppingCart, ChevronDown, MapPin, Phone, Mail, Printer } from 'lucide-react';
 import { cn } from '@utils/cn';
 import api from '@services/api';
+import { printInvoice } from '@utils/printInvoice';
 import toast from 'react-hot-toast';
 
 const statusOptions = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
@@ -23,8 +24,15 @@ const AdminOrders = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [expandedId, setExpandedId] = useState(null);
+  const [storeSettings, setStoreSettings] = useState({});
 
   useEffect(() => { fetchOrders(); }, []);
+
+  useEffect(() => {
+    api.get('/settings/public')
+      .then((res) => setStoreSettings(res.data || {}))
+      .catch(() => { /* invoice falls back to defaults */ });
+  }, []);
 
   const fetchOrders = async () => {
     try {
@@ -144,6 +152,12 @@ const AdminOrders = () => {
                               <span>Total</span>
                               <span>₹{order.totalAmount?.toLocaleString('en-IN')}</span>
                             </div>
+                            <button
+                              onClick={() => printInvoice(order, storeSettings)}
+                              className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary-dark transition-colors"
+                            >
+                              <Printer size={15} /> Print Invoice / Receipt
+                            </button>
                           </div>
                         </div>
                       </td>

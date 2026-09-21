@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, ShoppingBag, MapPin, Phone, Mail, X } from 'lucide-react';
+import { Bell, ShoppingBag, MapPin, Phone, Mail, X, Printer } from 'lucide-react';
 import { cn } from '@utils/cn';
 import api from '@services/api';
+import { printInvoice } from '@utils/printInvoice';
 
 const LAST_SEEN_KEY = 'munaz_admin_orders_last_seen';
 
@@ -25,6 +26,7 @@ const AdminNotifications = ({ darkMode }) => {
   const [orders, setOrders] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
   const [lastSeen, setLastSeen] = useState(() => Number(localStorage.getItem(LAST_SEEN_KEY)) || 0);
+  const [storeSettings, setStoreSettings] = useState({});
   const panelRef = useRef(null);
 
   const fetchOrders = useCallback(async () => {
@@ -42,6 +44,13 @@ const AdminNotifications = ({ darkMode }) => {
     const id = setInterval(fetchOrders, 60000);
     return () => clearInterval(id);
   }, [fetchOrders]);
+
+  // Store settings for invoice branding.
+  useEffect(() => {
+    api.get('/settings/public')
+      .then((res) => setStoreSettings(res.data || {}))
+      .catch(() => {});
+  }, []);
 
   // Close dropdown on outside click.
   useEffect(() => {
@@ -167,12 +176,20 @@ const AdminNotifications = ({ darkMode }) => {
                                 <span className="capitalize">
                                   {order.paymentMethod === 'cod' ? 'Cash on Delivery' : order.paymentMethod?.toUpperCase()} · {order.status}
                                 </span>
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); setOpen(false); navigate('/admin/orders'); }}
-                                  className="text-primary font-medium hover:underline"
-                                >
-                                  View in Orders →
-                                </button>
+                                <div className="flex items-center gap-3">
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); printInvoice(order, storeSettings); }}
+                                    className="text-primary font-medium hover:underline flex items-center gap-1"
+                                  >
+                                    <Printer size={12} /> Print
+                                  </button>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); setOpen(false); navigate('/admin/orders'); }}
+                                    className="text-primary font-medium hover:underline"
+                                  >
+                                    View →
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </motion.div>
