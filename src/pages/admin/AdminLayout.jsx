@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Package, FolderTree, Image, ShoppingCart,
   Users, Settings, ChevronLeft, ChevronRight, ChevronDown, Menu, X,
-  Sun, Moon, Bell, Search, LogOut, Store, Plus, List
+  Sun, Moon, Search, LogOut, Store, Plus, List
 } from 'lucide-react';
 import { cn } from '@utils/cn';
+import AdminNotifications from '@components/admin/AdminNotifications';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
@@ -250,10 +251,7 @@ const AdminLayout = () => {
             </button>
 
             {/* Notifications */}
-            <button className={cn('p-2.5 rounded-lg relative transition-colors', darkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-100')}>
-              <Bell size={18} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-secondary rounded-full" />
-            </button>
+            <AdminNotifications darkMode={darkMode} />
 
             {/* Admin Avatar */}
             <div className={cn('flex items-center gap-2 pl-2 ml-1 border-l', darkMode ? 'border-gray-700' : 'border-gray-200')}>
