@@ -23,29 +23,37 @@ const LogoMark = ({ size, variant }) => {
   const gradId = `munaz-mark-${variant}`;
   const c1 = variant === 'light' ? '#FFFFFF' : '#7E57C2';
   const c2 = variant === 'light' ? '#F9A8D4' : '#EC4899';
+  const mColor = variant === 'light' ? '#7E57C2' : '#FFFFFF';
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
-        <linearGradient id={gradId} x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+        <linearGradient id={gradId} x1="10" y1="14" x2="40" y2="46" gradientUnits="userSpaceOnUse">
           <stop stopColor={c1} />
           <stop offset="1" stopColor={c2} />
         </linearGradient>
       </defs>
-      {/* Lotus / bloom motif — an ethnic-fashion emblem (distinct from any boxed letter) */}
-      {/* Center petal */}
-      <path d="M24 5 C27 12 27 20 24 27 C21 20 21 12 24 5 Z" fill={`url(#${gradId})`} />
-      {/* Left inner petal */}
-      <path d="M24 27 C18 22 13 16 12 9 C19 11 24 17 26 25 Z" fill={`url(#${gradId})`} opacity="0.85" />
-      {/* Right inner petal */}
-      <path d="M24 27 C30 22 35 16 36 9 C29 11 24 17 22 25 Z" fill={`url(#${gradId})`} opacity="0.85" />
-      {/* Left outer petal */}
-      <path d="M24 28 C16 27 8 24 4 18 C11 16 20 19 25 26 Z" fill={`url(#${gradId})`} opacity="0.65" />
-      {/* Right outer petal */}
-      <path d="M24 28 C32 27 40 24 44 18 C37 16 28 19 23 26 Z" fill={`url(#${gradId})`} opacity="0.65" />
-      {/* Base curve — like a graceful drape / stem */}
-      <path d="M14 32 C18 38 30 38 34 32" stroke={c2} strokeWidth="2.5" strokeLinecap="round" fill="none" />
-      {/* Accent center */}
-      <circle cx="24" cy="26" r="2" fill={c2} />
+      {/* Shopping bag body (gradient fill) */}
+      <path
+        d="M11 16 H37 L38.6 42 C38.7 43.6 37.4 45 35.8 45 H12.2 C10.6 45 9.3 43.6 9.4 42 L11 16 Z"
+        fill={`url(#${gradId})`}
+      />
+      {/* Bag handles */}
+      <path
+        d="M17 18 V13 C17 9.1 20.1 6 24 6 C27.9 6 31 9.1 31 13 V18"
+        stroke={c1}
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* 'M' embossed on the bag */}
+      <path
+        d="M17 38 V27 C17 26 18.2 25.6 18.9 26.4 L24 32 L29.1 26.4 C29.8 25.6 31 26 31 27 V38"
+        stroke={mColor}
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };
