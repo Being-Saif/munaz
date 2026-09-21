@@ -77,13 +77,17 @@ export const printInvoice = (order, settings = {}) => {
       <div class="brand-row">
         <svg width="34" height="34" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="inv-mark" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+            <linearGradient id="inv-mark" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
               <stop stop-color="#7E57C2" /><stop offset="1" stop-color="#EC4899" />
             </linearGradient>
           </defs>
-          <rect x="1.5" y="1.5" width="45" height="45" rx="12" stroke="#7E57C2" stroke-width="2.5" opacity="0.9" />
-          <path d="M12 34 V16 C12 14.5 13.8 13.8 14.9 14.9 L24 26 L33.1 14.9 C34.2 13.8 36 14.5 36 16 V34" stroke="url(#inv-mark)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-          <circle cx="24" cy="30.5" r="2.6" fill="#EC4899" />
+          <path d="M24 5 C27 12 27 20 24 27 C21 20 21 12 24 5 Z" fill="url(#inv-mark)" />
+          <path d="M24 27 C18 22 13 16 12 9 C19 11 24 17 26 25 Z" fill="url(#inv-mark)" opacity="0.85" />
+          <path d="M24 27 C30 22 35 16 36 9 C29 11 24 17 22 25 Z" fill="url(#inv-mark)" opacity="0.85" />
+          <path d="M24 28 C16 27 8 24 4 18 C11 16 20 19 25 26 Z" fill="url(#inv-mark)" opacity="0.65" />
+          <path d="M24 28 C32 27 40 24 44 18 C37 16 28 19 23 26 Z" fill="url(#inv-mark)" opacity="0.65" />
+          <path d="M14 32 C18 38 30 38 34 32" stroke="#EC4899" stroke-width="2.5" stroke-linecap="round" fill="none" />
+          <circle cx="24" cy="26" r="2" fill="#EC4899" />
         </svg>
         <div class="brand">${esc(storeName).replace(/z$/i, '<span style="color:#EC4899">z</span>')}</div>
       </div>

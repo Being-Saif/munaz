@@ -20,30 +20,32 @@ const SIZES = {
 const ACCENT = '#EC4899'; // theme secondary (pink)
 
 const LogoMark = ({ size, variant }) => {
-  // Wordmark color: purple on light bg, white on dark bg.
-  const primary = variant === 'light' ? '#FFFFFF' : '#7E57C2';
   const gradId = `munaz-mark-${variant}`;
+  const c1 = variant === 'light' ? '#FFFFFF' : '#7E57C2';
+  const c2 = variant === 'light' ? '#F9A8D4' : '#EC4899';
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
-        <linearGradient id={gradId} x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-          <stop stopColor={variant === 'light' ? '#FFFFFF' : '#7E57C2'} />
-          <stop offset="1" stopColor={variant === 'light' ? '#F9A8D4' : '#EC4899'} />
+        <linearGradient id={gradId} x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+          <stop stopColor={c1} />
+          <stop offset="1" stopColor={c2} />
         </linearGradient>
       </defs>
-      {/* Rounded badge */}
-      <rect x="1.5" y="1.5" width="45" height="45" rx="12" stroke={primary} strokeWidth="2.5" opacity="0.9" />
-      {/* Stylized 'M' — two elegant strokes meeting in a soft valley, purple→pink gradient */}
-      <path
-        d="M12 34 V16 C12 14.5 13.8 13.8 14.9 14.9 L24 26 L33.1 14.9 C34.2 13.8 36 14.5 36 16 V34"
-        stroke={`url(#${gradId})`}
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      {/* Pink accent dot — the 'jewel' of the mark */}
-      <circle cx="24" cy="30.5" r="2.6" fill={ACCENT} />
+      {/* Lotus / bloom motif — an ethnic-fashion emblem (distinct from any boxed letter) */}
+      {/* Center petal */}
+      <path d="M24 5 C27 12 27 20 24 27 C21 20 21 12 24 5 Z" fill={`url(#${gradId})`} />
+      {/* Left inner petal */}
+      <path d="M24 27 C18 22 13 16 12 9 C19 11 24 17 26 25 Z" fill={`url(#${gradId})`} opacity="0.85" />
+      {/* Right inner petal */}
+      <path d="M24 27 C30 22 35 16 36 9 C29 11 24 17 22 25 Z" fill={`url(#${gradId})`} opacity="0.85" />
+      {/* Left outer petal */}
+      <path d="M24 28 C16 27 8 24 4 18 C11 16 20 19 25 26 Z" fill={`url(#${gradId})`} opacity="0.65" />
+      {/* Right outer petal */}
+      <path d="M24 28 C32 27 40 24 44 18 C37 16 28 19 23 26 Z" fill={`url(#${gradId})`} opacity="0.65" />
+      {/* Base curve — like a graceful drape / stem */}
+      <path d="M14 32 C18 38 30 38 34 32" stroke={c2} strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      {/* Accent center */}
+      <circle cx="24" cy="26" r="2" fill={c2} />
     </svg>
   );
 };
