@@ -1,6 +1,6 @@
 import { Link, Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { APP_NAME } from '@utils/constants';
+import Logo from '@components/common/Logo';
 
 const AuthLayout = () => {
   return (
@@ -20,9 +20,7 @@ const AuthLayout = () => {
         <div className="relative z-10 flex flex-col justify-between p-10 xl:p-14 w-full">
           {/* Logo */}
           <Link to="/">
-            <h1 className="font-heading text-3xl font-bold italic text-white">
-              {APP_NAME}
-            </h1>
+            <Logo variant="light" size="lg" to={null} />
           </Link>
 
           {/* Middle Text */}
@@ -70,9 +68,7 @@ const AuthLayout = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-dark/70 to-dark/90" />
           <div className="relative z-10 flex items-center justify-center h-full">
             <Link to="/">
-              <h1 className="font-heading text-3xl font-bold italic text-white">
-                {APP_NAME}
-              </h1>
+              <Logo variant="light" size="lg" to={null} />
             </Link>
           </div>
         </div>

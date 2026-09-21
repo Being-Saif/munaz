@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Package, FolderTree, Image, ShoppingCart,
   Users, Settings, ChevronLeft, ChevronRight, ChevronDown, Menu, X,
-  Sun, Moon, Search, LogOut, Store, Plus, List
+  Sun, Moon, Search, LogOut, Plus, List
 } from 'lucide-react';
 import { cn } from '@utils/cn';
+import Logo from '@components/common/Logo';
 import AdminNotifications from '@components/admin/AdminNotifications';
 
 const navItems = [
@@ -73,22 +74,22 @@ const AdminLayout = () => {
       >
         {/* Logo */}
         <div className={cn('flex items-center h-16 px-4 border-b', darkMode ? 'border-gray-700' : 'border-gray-200')}>
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
-              <Store size={18} className="text-white" />
-            </div>
-            <AnimatePresence>
-              {!collapsed && (
+          <div className="flex items-center gap-2 overflow-hidden">
+            {collapsed ? (
+              <Logo variant={darkMode ? 'light' : 'dark'} size="sm" to={null} showMark={true} className="[&>span:last-child]:hidden" />
+            ) : (
+              <>
+                <Logo variant={darkMode ? 'light' : 'dark'} size="sm" to={null} showMark={true} />
                 <motion.span
                   initial={{ opacity: 0, width: 0 }}
                   animate={{ opacity: 1, width: 'auto' }}
                   exit={{ opacity: 0, width: 0 }}
-                  className={cn('font-heading text-lg font-bold whitespace-nowrap', darkMode ? 'text-white' : 'text-gray-900')}
+                  className={cn('font-body text-xs font-medium uppercase tracking-wider whitespace-nowrap', darkMode ? 'text-gray-400' : 'text-gray-500')}
                 >
-                  Munaz Admin
+                  Admin
                 </motion.span>
-              )}
-            </AnimatePresence>
+              </>
+            )}
           </div>
 
           {/* Mobile close */}

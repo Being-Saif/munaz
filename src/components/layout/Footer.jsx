@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Globe, MessageCircle, Camera, MapPin, Mail, Phone } from 'lucide-react';
 import { APP_NAME, APP_TAGLINE, FOOTER_LINKS } from '@utils/constants';
+import Logo from '@components/common/Logo';
 import { logout } from '@redux/slices/authSlice';
 import api from '@services/api';
 import toast from 'react-hot-toast';
@@ -34,9 +35,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <h2 className="font-heading text-2xl font-bold italic mb-3">
-              {APP_NAME}
-            </h2>
+            <div className="mb-3">
+              <Logo variant="light" size="md" />
+            </div>
             <p className="text-white/60 text-sm leading-relaxed mb-4">
               Your destination for premium quality fashion and timeless style. {APP_TAGLINE}.
             </p>

@@ -45,6 +45,7 @@ export const printInvoice = (order, settings = {}) => {
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', Arial, sans-serif; color: #1f2937; padding: 28px; font-size: 13px; line-height: 1.5; }
   .brand { font-size: 30px; font-weight: 700; font-style: italic; color: #7E57C2; letter-spacing: -0.5px; }
+  .brand-row { display: flex; align-items: center; gap: 8px; }
   .brand-sub { font-size: 11px; color: #9ca3af; margin-top: 2px; }
   .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #7E57C2; padding-bottom: 16px; margin-bottom: 20px; }
   .invoice-title { text-align: right; }
@@ -73,7 +74,19 @@ export const printInvoice = (order, settings = {}) => {
 <body>
   <div class="header">
     <div>
-      <div class="brand">${esc(storeName)}</div>
+      <div class="brand-row">
+        <svg width="34" height="34" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="inv-mark" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#7E57C2" /><stop offset="1" stop-color="#EC4899" />
+            </linearGradient>
+          </defs>
+          <rect x="1.5" y="1.5" width="45" height="45" rx="12" stroke="#7E57C2" stroke-width="2.5" opacity="0.9" />
+          <path d="M12 34 V16 C12 14.5 13.8 13.8 14.9 14.9 L24 26 L33.1 14.9 C34.2 13.8 36 14.5 36 16 V34" stroke="url(#inv-mark)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+          <circle cx="24" cy="30.5" r="2.6" fill="#EC4899" />
+        </svg>
+        <div class="brand">${esc(storeName).replace(/z$/i, '<span style="color:#EC4899">z</span>')}</div>
+      </div>
       <div class="brand-sub">${esc(storeAddress)}</div>
       ${contactEmail ? `<div class="brand-sub">${esc(contactEmail)}</div>` : ''}
       ${contactPhone ? `<div class="brand-sub">${esc(contactPhone)}</div>` : ''}

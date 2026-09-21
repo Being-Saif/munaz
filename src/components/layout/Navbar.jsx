@@ -3,7 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Heart, ShoppingBag, User, Menu, X, Search } from 'lucide-react';
 import { cn } from '@utils/cn';
-import { NAV_LINKS, APP_NAME } from '@utils/constants';
+import Logo from '@components/common/Logo';
+import { NAV_LINKS } from '@utils/constants';
 import { selectCartTotalItems } from '@redux/slices/cartSlice';
 import { selectWishlistCount } from '@redux/slices/wishlistSlice';
 import { selectIsAuthenticated } from '@redux/slices/authSlice';
@@ -66,9 +67,7 @@ const Navbar = () => {
               </button>
 
               <Link to="/" className="flex-shrink-0">
-                <span className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold italic text-dark">
-                  {APP_NAME}
-                </span>
+                <Logo variant="dark" size="lg" to={null} />
               </Link>
             </div>
 
