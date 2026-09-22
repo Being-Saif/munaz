@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Globe, MessageCircle, Camera, MapPin, Mail, Phone } from 'lucide-react';
 import { APP_NAME, APP_TAGLINE, FOOTER_LINKS } from '@utils/constants';
 import Logo from '@components/common/Logo';
-import { logout } from '@redux/slices/authSlice';
+import { logout, selectCurrentUser } from '@redux/slices/authSlice';
 import api from '@services/api';
 import toast from 'react-hot-toast';
 
 const Footer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector(selectCurrentUser);
+  const isAdmin = user?.role === 'admin';
+  const adminName = user?.name ? user.name.split(' ')[0] : 'Team';
   const [settings, setSettings] = useState(null);
 
   useEffect(() => {
@@ -146,6 +149,18 @@ const Footer = () => {
         <div className="section-container py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white/40 text-xs">
             © {new Date().getFullYear()} {APP_NAME}. All Rights Reserved.
+            {isAdmin && (
+              <>
+                {' · '}
+                <Link
+                  to="/admin"
+                  className="text-white/40 hover:text-white/70 transition-colors"
+                  title="Dashboard"
+                >
+                  {adminName}
+                </Link>
+              </>
+            )}
           </p>
           {/* Payment Icons Placeholder */}
           <div className="flex items-center gap-3">
