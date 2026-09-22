@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
-import { Search, Users } from 'lucide-react';
+import { Search, Users, ShieldCheck, ShieldOff } from 'lucide-react';
 import { cn } from '@utils/cn';
+import { selectCurrentUser } from '@redux/slices/authSlice';
 import api from '@services/api';
 import toast from 'react-hot-toast';
 
 const AdminCustomers = () => {
   const { darkMode } = useOutletContext();
+  const currentUser = useSelector(selectCurrentUser);
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [updatingId, setUpdatingId] = useState(null);
 
   useEffect(() => { fetchCustomers(); }, []);
 
@@ -20,6 +24,20 @@ const AdminCustomers = () => {
       setCustomers(res.data || []);
     } catch { toast.error('Failed to load customers'); }
     finally { setLoading(false); }
+  };
+
+  const changeRole = async (userId, newRole) => {
+    if (updatingId) return;
+    setUpdatingId(userId);
+    try {
+      await api.put(`/users/${userId}/role`, { role: newRole });
+      setCustomers((prev) => prev.map((c) => c._id === userId ? { ...c, role: newRole } : c));
+      toast.success(newRole === 'admin' ? 'User promoted to admin' : 'Admin access removed');
+    } catch (err) {
+      toast.error(err.message || 'Failed to update role');
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   const filtered = customers.filter(c =>
@@ -51,6 +69,7 @@ const AdminCustomers = () => {
                   <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Role</th>
                   <th className="px-4 py-3 text-left font-medium hidden md:table-cell">Joined</th>
                   <th className="px-4 py-3 text-left font-medium">Status</th>
+                  <th className="px-4 py-3 text-right font-medium">Access</th>
                 </tr>
               </thead>
               <tbody className={cn('divide-y', darkMode ? 'divide-gray-700' : 'divide-gray-100')}>
@@ -77,6 +96,29 @@ const AdminCustomers = () => {
                       <span className={cn('px-2 py-0.5 text-xs rounded-full font-medium', customer.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')}>
                         {customer.isActive ? 'Active' : 'Inactive'}
                       </span>
+                    </td>
+                    <td className="px-4 py-3.5 text-right">
+                      {customer._id === currentUser?._id ? (
+                        <span className={cn('text-xs', darkMode ? 'text-gray-500' : 'text-gray-400')}>You</span>
+                      ) : customer.role === 'admin' ? (
+                        <button
+                          onClick={() => changeRole(customer._id, 'user')}
+                          disabled={updatingId === customer._id}
+                          className={cn('inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50', darkMode ? 'text-red-400 hover:bg-red-500/10' : 'text-red-600 hover:bg-red-50')}
+                          title="Remove admin access"
+                        >
+                          <ShieldOff size={13} /> Remove Admin
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => changeRole(customer._id, 'admin')}
+                          disabled={updatingId === customer._id}
+                          className={cn('inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50', darkMode ? 'text-primary hover:bg-primary/10' : 'text-primary hover:bg-primary/5')}
+                          title="Grant admin access"
+                        >
+                          <ShieldCheck size={13} /> Make Admin
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
