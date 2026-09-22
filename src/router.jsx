@@ -14,6 +14,13 @@ import MyAddressesPage from '@pages/user/MyAddressesPage';
 import MyAccountSettingsPage from '@pages/user/MyAccountSettingsPage';
 import CheckoutPage from '@pages/checkout/CheckoutPage';
 
+// Static / info pages
+import ContactPage from '@pages/static/ContactPage';
+import ShippingPage from '@pages/static/ShippingPage';
+import ReturnsPage from '@pages/static/ReturnsPage';
+import SizeGuidePage from '@pages/static/SizeGuidePage';
+import FaqPage from '@pages/static/FaqPage';
+
 // Auth Pages
 import LoginPage from '@pages/auth/LoginPage';
 import SignupPage from '@pages/auth/SignupPage';
@@ -48,6 +55,11 @@ const router = createBrowserRouter([
       { path: 'account/addresses', element: <MyAddressesPage /> },
       { path: 'account/settings', element: <MyAccountSettingsPage /> },
       { path: 'checkout', element: <CheckoutPage /> },
+      { path: 'contact', element: <ContactPage /> },
+      { path: 'shipping', element: <ShippingPage /> },
+      { path: 'returns', element: <ReturnsPage /> },
+      { path: 'size-guide', element: <SizeGuidePage /> },
+      { path: 'faq', element: <FaqPage /> },
     ],
   },
 
