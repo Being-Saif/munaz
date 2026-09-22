@@ -75,7 +75,10 @@ const Step3AdditionalDetails = ({ darkMode }) => {
 
         <div>
           <label className={labelClass}>Style Code / Product ID</label>
-          <input value={details.styleCode} onChange={(e) => update('styleCode', e.target.value)} placeholder="e.g. MNZ-KUR-2026" className={inputClass} />
+          <input value={details.styleCode} onChange={(e) => update('styleCode', e.target.value)} placeholder="Leave blank to auto-generate (e.g. MNZ-KUR-0007)" className={inputClass} />
+          <p className={cn('text-xs mt-1', darkMode ? 'text-gray-400' : 'text-gray-500')}>
+            Leave empty and a unique code will be created automatically when you publish.
+          </p>
         </div>
 
         <div>

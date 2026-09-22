@@ -207,6 +207,13 @@ const ProductDetailPage = () => {
               {product.name}
             </h1>
 
+            {/* Style code / product id */}
+            {product.additionalDetails?.styleCode && (
+              <p className="text-xs text-text-muted mb-2">
+                Style Code: <span className="font-medium text-text-secondary">{product.additionalDetails.styleCode}</span>
+              </p>
+            )}
+
             {/* Rating */}
             <div className="flex items-center gap-2 mb-4">
               <div className="flex items-center gap-0.5">
