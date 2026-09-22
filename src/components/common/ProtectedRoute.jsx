@@ -16,9 +16,15 @@ const ProtectedRoute = ({ children, role }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // Role required but user doesn't have it → go to home
-  if (role && user?.role !== role) {
-    return <Navigate to="/" replace />;
+  // Role required but user doesn't have it → go to home.
+  // A superadmin satisfies any 'admin' requirement.
+  if (role) {
+    const roles = Array.isArray(role) ? role : [role];
+    const allowed = roles.some((r) => user?.role === r) ||
+      (roles.includes('admin') && user?.role === 'superadmin');
+    if (!allowed) {
+      return <Navigate to="/" replace />;
+    }
   }
 
   return children;

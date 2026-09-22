@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 const AdminCustomers = () => {
   const { darkMode } = useOutletContext();
   const currentUser = useSelector(selectCurrentUser);
+  const isSuperAdmin = currentUser?.role === 'superadmin';
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -98,8 +99,12 @@ const AdminCustomers = () => {
                       </span>
                     </td>
                     <td className="px-4 py-3.5 text-right">
-                      {customer._id === currentUser?._id ? (
+                      {!isSuperAdmin ? (
+                        <span className={cn('text-xs', darkMode ? 'text-gray-600' : 'text-gray-300')}>—</span>
+                      ) : customer._id === currentUser?._id ? (
                         <span className={cn('text-xs', darkMode ? 'text-gray-500' : 'text-gray-400')}>You</span>
+                      ) : customer.role === 'superadmin' ? (
+                        <span className={cn('text-xs font-medium', darkMode ? 'text-purple-400' : 'text-purple-600')}>Super Admin</span>
                       ) : customer.role === 'admin' ? (
                         <button
                           onClick={() => changeRole(customer._id, 'user')}
