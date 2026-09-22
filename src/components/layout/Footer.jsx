@@ -12,7 +12,7 @@ const Footer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
   const adminName = user?.name ? user.name.split(' ')[0] : 'Team';
   const [settings, setSettings] = useState(null);
 
