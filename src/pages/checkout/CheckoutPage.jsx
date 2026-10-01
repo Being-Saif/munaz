@@ -31,6 +31,9 @@ const CheckoutPage = () => {
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [shipSettings, setShipSettings] = useState({ shippingFee: 10, freeShippingThreshold: 500 });
+  const [couponInput, setCouponInput] = useState('');
+  const [coupon, setCoupon] = useState(null); // { code, name, discount }
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,7 +56,29 @@ const CheckoutPage = () => {
   const standardShipping = subtotal >= shipSettings.freeShippingThreshold ? 0 : shipSettings.shippingFee;
   const expressSurcharge = 99;
   const shippingCost = shippingMethod === 'express' ? standardShipping + expressSurcharge : standardShipping;
-  const total = subtotal + shippingCost;
+  const discount = coupon?.discount || 0;
+  const total = Math.max(0, subtotal + shippingCost - discount);
+
+  const handleApplyCoupon = async () => {
+    const code = couponInput.trim();
+    if (!code || applyingCoupon) return;
+    setApplyingCoupon(true);
+    try {
+      const res = await api.post('/coupons/apply', { code, subtotal });
+      setCoupon({ code: res.data.code, name: res.data.name, discount: res.data.discount });
+      toast.success(`Coupon applied — ₹${res.data.discount} off!`);
+    } catch (err) {
+      setCoupon(null);
+      toast.error(err.message || 'Invalid coupon');
+    } finally {
+      setApplyingCoupon(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCoupon(null);
+    setCouponInput('');
+  };
 
   if (!user) {
     navigate('/login');
@@ -100,8 +125,9 @@ const CheckoutPage = () => {
       shippingMethod,
       itemsTotal: subtotal,
       shippingCost,
-      discount: 0,
-      totalAmount: subtotal + shippingCost,
+      discount,
+      couponCode: coupon?.code || '',
+      totalAmount: total,
     };
   };
 
@@ -458,10 +484,47 @@ const CheckoutPage = () => {
                     <span>{formatPrice(expressSurcharge)}</span>
                   </div>
                 )}
+                {discount > 0 && (
+                  <div className="flex justify-between text-success">
+                    <span>Discount{coupon?.code ? ` (${coupon.code})` : ''}</span>
+                    <span>- {formatPrice(discount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between font-bold text-dark text-base pt-2 border-t border-border">
                   <span>Total</span>
                   <span>{formatPrice(total)}</span>
                 </div>
+              </div>
+
+              {/* Coupon */}
+              <div className="border-t border-border pt-3 mb-3">
+                {coupon ? (
+                  <div className="flex items-center justify-between bg-success/10 rounded-lg px-3 py-2">
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-success truncate">{coupon.code} applied</p>
+                      <p className="text-[11px] text-text-muted truncate">{coupon.name}</p>
+                    </div>
+                    <button onClick={removeCoupon} className="text-xs text-red-500 font-medium hover:underline flex-shrink-0 ml-2">Remove</button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleApplyCoupon(); } }}
+                      placeholder="Coupon code"
+                      className="flex-1 px-3 py-2 rounded-lg border border-border text-sm uppercase outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                    <button
+                      onClick={handleApplyCoupon}
+                      disabled={applyingCoupon || !couponInput.trim()}
+                      className="px-3 py-2 rounded-lg text-sm font-medium bg-primary text-white hover:bg-primary-dark transition-colors disabled:opacity-50"
+                    >
+                      {applyingCoupon ? '...' : 'Apply'}
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Mini item list */}

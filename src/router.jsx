@@ -33,6 +33,7 @@ import AdminDashboard from '@pages/admin/AdminDashboard';
 import AdminProducts from '@pages/admin/AdminProducts';
 import AdminCategories from '@pages/admin/AdminCategories';
 import AdminBanners from '@pages/admin/AdminBanners';
+import AdminCoupons from '@pages/admin/AdminCoupons';
 import AdminOrders from '@pages/admin/AdminOrders';
 import AdminCustomers from '@pages/admin/AdminCustomers';
 import AdminSettings from '@pages/admin/AdminSettings';
@@ -74,6 +75,7 @@ const router = createBrowserRouter([
       { path: 'products/:id/edit', element: <ProductUploadPage /> },
       { path: 'categories', element: <AdminCategories /> },
       { path: 'banners', element: <AdminBanners /> },
+      { path: 'coupons', element: <AdminCoupons /> },
       { path: 'orders', element: <AdminOrders /> },
       { path: 'customers', element: <AdminCustomers /> },
       { path: 'settings', element: <AdminSettings /> },

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Package, FolderTree, Image, ShoppingCart,
   Users, Settings, ChevronLeft, ChevronRight, ChevronDown, Menu, X,
-  Sun, Moon, Search, LogOut, Plus, List
+  Sun, Moon, Search, LogOut, Plus, List, Ticket
 } from 'lucide-react';
 import { cn } from '@utils/cn';
 import Logo from '@components/common/Logo';
@@ -21,6 +21,7 @@ const navItems = [
   },
   { label: 'Categories', icon: FolderTree, path: '/admin/categories' },
   { label: 'Banners', icon: Image, path: '/admin/banners' },
+  { label: 'Coupons', icon: Ticket, path: '/admin/coupons' },
   { label: 'Orders', icon: ShoppingCart, path: '/admin/orders' },
   { label: 'Customers', icon: Users, path: '/admin/customers' },
   { label: 'Settings', icon: Settings, path: '/admin/settings' },
