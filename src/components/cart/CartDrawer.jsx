@@ -7,6 +7,7 @@ import { selectCartItems, selectCartTotalItems, selectCartSubtotal, selectCartTo
 import { selectIsCartOpen, closeCart } from '@redux/slices/uiSlice';
 import { formatPrice } from '@utils/formatters';
 import { cn } from '@utils/cn';
+import CouponStrip from '@components/cart/CouponStrip';
 
 // Overlay animation
 const overlayVariants = {
@@ -124,7 +125,9 @@ const CartDrawer = () => {
                   </button>
                 </div>
               ) : (
-                <AnimatePresence initial={false}>
+                <>
+                  <CouponStrip />
+                  <AnimatePresence initial={false}>
                   {items.map((item) => (
                     <motion.div
                       key={item.id}
@@ -194,6 +197,7 @@ const CartDrawer = () => {
                     </motion.div>
                   ))}
                 </AnimatePresence>
+                </>
               )}
             </div>
 
