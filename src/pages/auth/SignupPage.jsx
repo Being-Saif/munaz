@@ -65,23 +65,24 @@ const SignupPage = () => {
     if (!validate()) return;
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
 
-    const result = signupUser({
+    const result = await signupUser({
       firstName: formData.firstName,
       lastName: formData.lastName,
+      name: `${formData.firstName} ${formData.lastName}`.trim(),
       email: formData.email,
       password: formData.password,
     });
     setIsLoading(false);
 
     if (result.success) {
-      dispatch(setCredentials({ user: result.user, accessToken: 'demo_token_' + Date.now() }));
-      toast.success(`Welcome to Munaz, ${result.user.firstName}! 🎉`);
+      dispatch(setCredentials({ user: result.user, accessToken: result.token }));
+      if (result.token) localStorage.setItem('munaz_token', result.token);
+      toast.success(`Welcome to Munaz, ${result.user.firstName || result.user.name || ''}! 🎉`);
       navigate('/');
     } else {
       setErrors({ email: result.error });
-      toast.error(result.error);
+      toast.error(result.error || 'Signup failed. Please try again.');
     }
   };
 
