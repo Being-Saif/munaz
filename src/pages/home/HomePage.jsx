@@ -6,10 +6,14 @@ import ShopByOccasion from '@components/home/ShopByOccasion';
 import TrendingCarousel from '@components/home/TrendingCarousel';
 import WhyShopWithUs from '@components/home/WhyShopWithUs';
 import NewsletterBanner from '@components/home/NewsletterBanner';
+import CouponPopup from '@components/home/CouponPopup';
 
 const HomePage = () => {
   return (
     <div>
+      {/* Promotional coupon popup (shows coupons set to display on 'home') */}
+      <CouponPopup />
+
       {/* Hero Banner — Full-width image slider like biba.in */}
       <HeroBanner />
 
