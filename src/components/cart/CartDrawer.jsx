@@ -1,12 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingBag, Minus, Plus, Trash2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { selectCartItems, selectCartTotalItems, selectCartSubtotal, selectCartTotal, removeFromCart, updateQuantity } from '@redux/slices/cartSlice';
+import { selectCartItems, selectCartTotalItems, selectCartSubtotal, removeFromCart, updateQuantity } from '@redux/slices/cartSlice';
 import { selectIsCartOpen, closeCart } from '@redux/slices/uiSlice';
 import { formatPrice } from '@utils/formatters';
 import { cn } from '@utils/cn';
+import api from '@services/api';
 import CouponStrip from '@components/cart/CouponStrip';
 
 // Overlay animation
@@ -42,9 +43,22 @@ const CartDrawer = () => {
   const items = useSelector(selectCartItems);
   const totalItems = useSelector(selectCartTotalItems);
   const subtotal = useSelector(selectCartSubtotal);
-  const total = useSelector(selectCartTotal);
-  const shipping = useSelector((state) => state.cart.shipping);
   const discount = useSelector((state) => state.cart.discount);
+  const [shipSettings, setShipSettings] = useState({ shippingFee: 10, freeShippingThreshold: 500 });
+
+  // Pull the admin-configured shipping fee / free-shipping threshold so the
+  // cart drawer matches checkout (instead of the old hardcoded ₹10/₹500).
+  useEffect(() => {
+    api.get('/settings/public')
+      .then((res) => setShipSettings({
+        shippingFee: res.data?.shippingFee ?? 10,
+        freeShippingThreshold: res.data?.freeShippingThreshold ?? 500,
+      }))
+      .catch(() => { /* fall back to defaults */ });
+  }, []);
+
+  const shipping = subtotal >= shipSettings.freeShippingThreshold ? 0 : shipSettings.shippingFee;
+  const total = Math.max(0, subtotal + shipping - (discount || 0));
 
   // Lock body scroll when open
   useEffect(() => {
